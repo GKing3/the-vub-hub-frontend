@@ -1,0 +1,28 @@
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: .5rem;
+    padding: 1rem;
+}
+
+.nav-links {
+    display: flex;
+    list-style-type: none;
+    column-gap: 1.5rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #000;
+}
+
+.nav-buttons button {
+    background-color: dodgerblue;
+    color: #fff;
+    padding: .5rem;
+    margin-left: 1rem;
+    border-radius: 10px;
+    border: 1px solid dodgerblue;
+    cursor: pointer;
+}
