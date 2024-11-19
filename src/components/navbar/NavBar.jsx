@@ -1,13 +1,15 @@
 import "./navBar.css";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import search_icon from "../../assets/search.png";
 import avatar_icon from "../../assets/avatar.png";
+import { AppContext } from "../../context/AppContext";
 
 const NavBar = () => {
   const navigate = useNavigate();
 
   const [access, setAccess] = useState(true);
+  const {userData} = useContext(AppContext);
 
   return (
     <div>
@@ -36,7 +38,7 @@ const NavBar = () => {
           {access ? (
             <div className="profile-menu">
               <img
-                src={avatar_icon}
+                src={userData.image || avatar_icon}
                 alt="User profile avatar"
                 className="avatar"
               />

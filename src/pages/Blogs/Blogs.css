@@ -1,0 +1,25 @@
+.page-title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.blogs-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    justify-items: center;
+}
+
+.tags {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
+    gap: .7rem;
+    justify-items: center;
+}
+
+.tags p {
+    background-color: gainsboro;
+    padding: .5rem;
+    border-radius: 8px;
+    font-size: x-small;
+}

@@ -1,35 +1,29 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import './myProfile.css';
 import { useParams } from 'react-router-dom';
 import avatar_icon from "../../assets/avatar.png";
 import { PencilSquare } from 'react-bootstrap-icons'
+import { AppContext } from '../../context/AppContext';
 
 
 const MyProfile = () => {
-  const [userData, setUserData] = useState({
-    id: '',
-    image: '',
-    name: 'John Doe',
-    email: '',
-    gender: '',
-    dob: ''
-  })
+  const {userData, setUserData, updateAvatar} = useContext(AppContext);
 
   const {userId} = useParams();
-
   const [edit, setEdit] = useState(false);
-
   const [file, setFile] = useState(null);
 
   const handleImageChange = (e) => {
-    setFile(URL.createObjectURL(e.target.files[0]))
+    const newFile = URL.createObjectURL(e.target.files[0])
+    setFile(newFile);
+    updateAvatar(newFile);
   }
 
   return (
     <div className='profile-container'>
       <div className='profile-details'>
         <div className='profile-avatar'>
-          <div className='user-pic'> <img src={file || avatar_icon} alt="User profile picture" /> </div>
+          <div className='user-pic'> <img src={file || userData.image || avatar_icon} alt="User profile picture" /> </div>
           <input onChange={handleImageChange} type="file" name="avatar" id='avatar' accept='jpeg, png, jpg, webp'/>
           <label htmlFor='avatar'> {<PencilSquare/>} </label>
         </div>
