@@ -1,0 +1,10 @@
+.footer-container {
+    bottom: 0;
+    margin-inline: 1.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid #000;
+    padding: 2rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
