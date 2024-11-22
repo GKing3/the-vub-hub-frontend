@@ -6,6 +6,8 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import MyProfile from "./pages/MyProfile/MyProfile";
 import MyBlogs from "./pages/MyBlogs/MyBlogs";
+import WritePage from "./pages/write/write";
+import PostDetail from "./pages/MyBlogs/PostDetail";
 
 function App() {
   return (
@@ -14,8 +16,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/my-profile" element={<MyProfile/>} />
-        <Route path="/my-blogs" element={<MyBlogs/>}></Route>
+        <Route path="/my-profile" element={<MyProfile />} />
+        <Route path="/my-blogs" element={<MyBlogs />}></Route>
+        <Route path="/post-detail/:postId" element={<PostDetail />} />
+        <Route path="/write" element={<WritePage />} />
       </Routes>
     </React.Fragment>
   );
