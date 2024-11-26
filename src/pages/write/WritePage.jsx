@@ -58,7 +58,7 @@ const WritePage = () => {
 
   return (
     <div className="write-container">
-      <h2 className="header">Create a Post</h2>
+      <h2 className="header">Create a blog</h2>
       <div className="inputContainer">
         <label htmlFor="post-title" className="label">
           Title
