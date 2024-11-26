@@ -1,0 +1,21 @@
+.post-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .post-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .post-content {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .post-date {
+    font-size: 14px;
+    color: #555;
+  }
+  
