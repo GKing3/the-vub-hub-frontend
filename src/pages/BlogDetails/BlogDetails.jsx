@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // Hook to get URL parameters
-import "./postDetails.css";
+import "./blogDetails.css";
 
 const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API endpoint
 
-const PostDetail = () => {
+const BlogDetails = () => {
   const { postId } = useParams(); // Get the post ID from the URL
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -49,4 +49,4 @@ const PostDetail = () => {
   );
 };
 
-export default PostDetail;
+export default BlogDetails;
