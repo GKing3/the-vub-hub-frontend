@@ -51,7 +51,7 @@ const MyBlogs = () => {
                   ? `${post.body.substring(0, 100)}...`
                   : post.body}
               </p>
-              <Link to={`/post-detail/${post.id}`} className="read-more">
+              <Link to={`/blog-details/${post.id}`} className="read-more">
                 Read More
               </Link>
               <span className="post-date">

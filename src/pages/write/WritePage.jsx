@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./write.css";
+import "./writePage.css";
 
 // JSONPlaceholder as mock backend for the moment
 const API_URL = "https://jsonplaceholder.typicode.com/posts";
@@ -7,6 +7,8 @@ const API_URL = "https://jsonplaceholder.typicode.com/posts";
 const WritePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [link, setLink] = useState("");
+  const [media, setMedia] = useState(null);
 
   const handleSubmit = async () => {
     if (title.trim() === "" || content.trim() === "") {
@@ -20,6 +22,8 @@ const WritePage = () => {
       title,
       body: content,
       userId: 1,
+      link: link.trim() !== "" ? link : null, // voeg link toe als deze is ingevoerd
+      media: media ? URL.createObjectURL(media) : null, // voeg media toe als deze is geüpload
     };
 
     try {
@@ -43,6 +47,8 @@ const WritePage = () => {
       // Clear form when post is succesfully submitted
       setTitle("");
       setContent("");
+      setLink("");
+      setMedia(null);
       //Error handling
     } catch (error) {
       console.error("Error submitting post:", error);
@@ -56,9 +62,18 @@ const WritePage = () => {
     console.log("Post creation canceled.");
   };
 
+  const handleMediaUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setMedia(file);
+    }
+  };
+
   return (
     <div className="write-container">
-      <h2 className="header">Create a blog</h2>
+      <h2 className="header">Create a post</h2>
+
+      {/* Title */}
       <div className="inputContainer">
         <label htmlFor="post-title" className="label">
           Title
@@ -72,6 +87,8 @@ const WritePage = () => {
           className="input"
         />
       </div>
+
+      {/* Content */}
       <div className="inputContainer">
         <label htmlFor="post-content" className="label">
           Content
@@ -84,6 +101,38 @@ const WritePage = () => {
           className="textarea"
         />
       </div>
+
+      {/* Link */}
+      <div className="inputContainer">
+        <label htmlFor="post-link" className="label">
+          Link
+        </label>
+        <input
+          id="post-link"
+          type="url"
+          placeholder="Enter a URL"
+          value={link}
+          onChange={(e) => setLink(e.target.value)}
+          className="input"
+        />
+      </div>
+
+      {/* Media Upload */}
+      <div className="inputContainer">
+        <label htmlFor="post-media" className="label">
+          Upload Media (Image/Video)
+        </label>
+        <input
+          id="post-media"
+          type="file"
+          accept="image/*,video/*"
+          onChange={handleMediaUpload}
+          className="input"
+        />
+        {media && <p>Selected file: {media.name}</p>}
+      </div>
+
+      {/* Buttons */}
       <div className="buttonContainer">
         <button onClick={handleSubmit} className="submitButton">
           Post

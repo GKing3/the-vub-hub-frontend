@@ -9,12 +9,12 @@ const NavBar = () => {
   const navigate = useNavigate();
 
   const [access, setAccess] = useState(true);
-  const {userData} = useContext(AppContext);
+  const { userData } = useContext(AppContext);
 
   return (
     <div>
       <div className="navbar">
-        <Link className="logo" to='/'>
+        <Link className="logo" to="/">
           <h2> The VUB Hub </h2>
         </Link>
 
@@ -23,7 +23,7 @@ const NavBar = () => {
             <NavLink className="nav-link" to="/">
               <li> Home </li>
             </NavLink>
-            <NavLink className="nav-link">
+            <NavLink className="nav-link" to="/write">
               <li> Write </li>
             </NavLink>
           </ul>
@@ -46,7 +46,10 @@ const NavBar = () => {
                 <div className="profile-list">
                   <p onClick={() => navigate("my-profile")}> Profile </p>
                   <p onClick={() => navigate("my-blogs")}> My Blogs </p>
-                  <p onClick={() => navigate("my-favourites")}> My Favourites </p>
+                  <p onClick={() => navigate("my-favourites")}>
+                    {" "}
+                    My Favourites{" "}
+                  </p>
                   <p onClick={() => setAccess(false)}> Logout </p>
                 </div>
               </div>
