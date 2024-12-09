@@ -1,21 +1,21 @@
-import "./Login.css";
-import { useContext, useState } from "react";
+import "./Register.css";
+import { useState } from "react";
 import { Bounce, ToastContainer, toast } from "react-toastify";
 import 'react-toastify/ReactToastify.css';
-// import { url } from "../../Api";
+import { url } from "../../Api";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "../../context/AppContext";
 
 const initialState = {
+  name: '',
   email: '',
-  password: ''
+  password: '',
+  confirmPassword: ''
 }
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
 
-  const { url, access, setAccess } = useContext(AppContext);
   const [state, setState] = useState(initialState);
 
   const handleChange = (e) => {
@@ -26,21 +26,16 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(url + 'auth/login', state);
-      // console.log(response);
-      const data = await response.data;
-      if(data.success) {
-        localStorage.setItem('access', data.access);
-        setAccess(data.access);
-      }
+      const response = await axios.post(url + 'auth/register', state);
+      console.log(response);
 
-      if(!state.email || !state.password) {
+      if(!state.name || !state.email || !state.password || !state.confirmPassword) {
         toast.error('Please fill out all fields');
+      } else if(state.password !== state.confirmPassword) {
+        toast.error('Passwords do not match!');
       } else {
-        toast.success('Logged in successfully!', {
-          onClose: () => {
-            navigate('/');
-          }
+        toast.success('Account created successfully', {
+            onClose: () => navigate('/login')
         });
       }
     } catch (error) {
@@ -52,22 +47,27 @@ const Login = () => {
     <div className="form-container">
       <form onSubmit={handleSubmit} className="form-group" method="post">
         <div>
-          <h2> Welcome back </h2>
-          <p> You can sign in to your page </p>
+          <h2> Create account </h2>
+          <p> You can create an account here </p>
         </div>
 
         <div className="form-input">
+          <p> Name: </p>
+          <input type="text" name="name" onChange={handleChange} value={state.name} />
           <p> Email address: </p>
           <input type="email" name="email" onChange={handleChange} value={state.email} />
           <p> Password: </p>
           <input type="password" name="password" onChange={handleChange} value={state.password} />
+          <p> Confirm Password: </p>
+          <input type="password" name="confirmPassword" onChange={handleChange} value={state.confirmPassword} />
         </div>
 
-        <button className="submit" type="submit"> Login </button>
+        <button className="submit" type="submit"> Create account </button>
 
         <div>
-            <p> New User?
-              <span className="form-guide" onClick={() => navigate('/register')}> Create an account </span>
+            <p>
+              Already have an account?
+              <span className="form-guide" onClick={() => navigate('/login')}> Sign in </span>
             </p>
         </div>
       </form>
@@ -89,4 +89,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

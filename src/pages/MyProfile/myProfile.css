@@ -60,3 +60,9 @@
     text-align: center;
     margin-top: -3.5rem;
 }
+
+.follow-container {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}

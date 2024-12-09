@@ -1,36 +1,37 @@
 import "./Home.css";
-import post001 from '../../assets/post-001.jpg';
-import Api from '../../Api.js';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { url } from "../../Api";
 import { useEffect, useState } from "react";
+import { ChatLeftDots, Heart } from "react-bootstrap-icons";
 
 const Home = () => {
   const navigate = useNavigate();
+  const [blogs, setBlogs] = useState([]);
+  const [likes, setLikes] = useState();
 
-  let myBlogs = Api.getBlogs();
-  console.log(myBlogs);
+  const handleBlogs = async() => {
+    try {
+      const response = await axios.get(url + 'posts/');
+      // console.log(response);
+      setBlogs(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  // const [users, setUsers] = useState([]);
-
-  // const handleUsers = () => {
-  //   Api.getUsers().then((data) => {
-  //     console.log(data);
-  //     setUsers(data);
-  //   })
-  // }
-
-  // useEffect(() => {
-  //   handleUsers()
-  // }, [])
+  useEffect(() => {
+    handleBlogs();
+  }, [])
 
   return (
     <div>
       <article className="featured-container">
         <div className="featured-details">
           {
-            myBlogs.map((blog, index) => (
-              <div key={index}>
-                <Link className="featured-tag" hrefLang={`/tags/${blog.tags}`}> {blog.tags[0]} </Link>
+            blogs.slice(0, 1).map((blog) => (
+              <div key={blog.id}>
+                <Link className="featured-tag"> {blog.tags} </Link>
                 <h2> {blog.title} </h2>
                 <p> {blog.created_at} </p>
               </div>
@@ -38,18 +39,51 @@ const Home = () => {
           }
         </div>
         <div className="featured-post">
-          <img src={post001} alt="A child wearing a VR headset" />
+          {
+            blogs.slice(0, 1).map((blog) => (
+              <>
+                <img src={blog.image_url} alt="Featured Post" />
+              </>
+            ))
+          }
         </div>
       </article>
+      <div className="popular-container">
+        <h2> Popular Posts </h2>
+        <div className="popular-posts">
+          {
+            blogs.map((blog) => (
+              <>
+                <div key={blog.id}>
+                  <img src={blog.image_url} alt="Popular Post" />
+                  <div>
+                    <Link> {blog.tags} </Link>
+                    <span> {blog.created_at} </span>
+                  </div>
+                  <Link to="/posts/:postId"> {blog.title} </Link>
+                </div>
+              </>
+            ))
+          }
+        </div>
+      </div>
       <div className="latest-container">
         <h2> Latest Posts </h2>
         <div className="latest-posts">
-          <div>box 1</div>
-          <div>box 2</div>
-          <div>box 3</div>
-          <div>box 4</div>
-          <div>box 5</div>
-          <div>box 6</div>
+          {
+              blogs.map((blog) => (
+                <>
+                  <div key={blog.id}>
+                    <img src={blog.image_url} alt="Latest Posts" />
+                    <div>
+                      <Link> {blog.tags} </Link>
+                      <span> {blog.created_at} </span>
+                    </div>
+                    <Link to="/posts/:postId"> {blog.title} </Link>
+                  </div>
+                </>
+              ))
+            }
         </div>
       </div>
       <div className="hero-section">
@@ -61,7 +95,7 @@ const Home = () => {
             Start exploring or add your voice to the conversation.
           </p>
         </div>
-        <button onClick={() => navigate('/blogs')} className="hero-button"> Explore Now </button>
+        <button onClick={() => {navigate('/posts/'); scrollTo(0, 0)}} className="hero-button"> Explore Now </button>
       </div>
     </div>
   );

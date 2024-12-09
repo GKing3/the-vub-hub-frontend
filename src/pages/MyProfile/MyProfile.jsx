@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import './myProfile.css';
-import { useParams } from 'react-router-dom';
 import avatar_icon from "../../assets/avatar.png";
 import { PencilSquare } from 'react-bootstrap-icons'
 import { AppContext } from '../../context/AppContext';
@@ -9,7 +8,6 @@ import { AppContext } from '../../context/AppContext';
 const MyProfile = () => {
   const {userData, setUserData, updateAvatar} = useContext(AppContext);
 
-  const {userId} = useParams();
   const [edit, setEdit] = useState(false);
   const [file, setFile] = useState(null);
 
@@ -23,7 +21,7 @@ const MyProfile = () => {
     <div className='profile-container'>
       <div className='profile-details'>
         <div className='profile-avatar'>
-          <div className='user-pic'> <img src={file || userData.image || avatar_icon} alt="User profile picture" /> </div>
+          <div className='user-pic'> <img src={file || userData.image_url || avatar_icon} alt="User profile picture" /> </div>
           <input onChange={handleImageChange} type="file" name="avatar" id='avatar' accept='jpeg, png, jpg, webp'/>
           <label htmlFor='avatar'> {<PencilSquare/>} </label>
         </div>
@@ -36,8 +34,18 @@ const MyProfile = () => {
             </>
           ) : ( <p className='user-name'> {userData.name} </p> )
         }
+        <div className='follow-container'>
+          <div>
+            <p> Followers </p>
+            <span> 5 </span>
+          </div>
+          <div>
+            <p> Following </p>
+            <span> 4 </span>
+          </div>
+        </div>
         <p> Email: {userData.email} </p>
-        {
+        {/* {
           edit
           ? 
             <>
@@ -58,7 +66,7 @@ const MyProfile = () => {
               <input type="date" value={userData.dob} onChange={e => setUserData(prev => ({...prev, dob: e.target.value}))}/>
             </>
           ) : ( <p> Date of birth: {userData.dob} </p> )
-        }
+        } */}
         {
           edit 
           ? (
