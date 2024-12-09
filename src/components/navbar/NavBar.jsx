@@ -1,5 +1,5 @@
 import "./navBar.css";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import search_icon from "../../assets/search.png";
 import avatar_icon from "../../assets/avatar.png";
@@ -7,9 +7,31 @@ import { AppContext } from "../../context/AppContext";
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+;
+  const {userData, access, setAccess} = useContext(AppContext);
+  const [blogs, setBlogs] = useState([]);
+  const [search, setSearch] = useState('');
 
-  const [access, setAccess] = useState(true);
-  const {userData} = useContext(AppContext);
+  const handleSearch = (e) => {
+    if(e.key === 'Enter') {
+      const query = e.target.value;
+
+      if(location.pathname === '/posts/') {
+        const newSearch = `?tag=${query}`;
+        if(location.search !== newSearch) {
+          navigate({ pathname: location.pathname, search: newSearch });
+        }
+      } else {
+        navigate(`/posts/?tag=${query}`);
+      }
+    }
+  }
+
+  const handleLogout = () => {
+    setAccess(false);
+    localStorage.removeItem('access');
+  }
 
   return (
     <div>
@@ -30,7 +52,7 @@ const NavBar = () => {
         </div>
 
         <div className="search-container">
-          <input type="text" placeholder="Search for blogs" />
+          <input type="text" placeholder="Search for blogs" onKeyDown={handleSearch}/>
           <img className="search_icon" src={search_icon} alt="Search icon" />
         </div>
 
@@ -47,12 +69,12 @@ const NavBar = () => {
                   <p onClick={() => navigate("my-profile")}> Profile </p>
                   <p onClick={() => navigate("my-blogs")}> My Blogs </p>
                   <p onClick={() => navigate("my-favourites")}> My Favourites </p>
-                  <p onClick={() => setAccess(false)}> Logout </p>
+                  <p onClick={handleLogout}> Logout </p>
                 </div>
               </div>
             </div>
           ) : (
-            <button onClick={() => navigate("/login")}> Sign Up </button>
+            <button onClick={() => navigate("/register")}> Sign Up </button>
           )}
         </div>
       </div>

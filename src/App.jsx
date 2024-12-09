@@ -10,6 +10,8 @@ import MyProfile from "./pages/MyProfile/MyProfile";
 import MyBlogs from "./pages/MyBlogs/MyBlogs";
 import MyFavourites from './pages/MyFavourites/MyFavourites';
 import Blogs from './pages/Blogs/Blogs';
+import Register from "./pages/Register/Register";
+import BlogDetails from "./pages/BlogDetails/BlogDetails";
 
 function App() {
   return (
@@ -18,11 +20,13 @@ function App() {
         <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register/>}/>
           <Route path="/login" element={<Login />} />
           <Route path="/my-profile" element={<MyProfile/>} />
           <Route path="/my-blogs" element={<MyBlogs/>}></Route>
           <Route path="/my-favourites" element={<MyFavourites/>}></Route>
-          <Route path="/blogs" element={<Blogs/>}></Route>
+          <Route path="/posts/" element={<Blogs/>}></Route>
+          <Route path="/posts/:postId" element={<BlogDetails/>}/>
         </Routes>
         <Footer/>
       </AppContextProvider>
