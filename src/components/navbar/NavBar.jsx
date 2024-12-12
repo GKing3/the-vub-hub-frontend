@@ -48,6 +48,9 @@ const NavBar = () => {
             <NavLink className="nav-link">
               <li> Write </li>
             </NavLink>
+            <NavLink className="nav-link" to="/news">
+              <li> News </li>
+            </NavLink>
           </ul>
         </div>
 
