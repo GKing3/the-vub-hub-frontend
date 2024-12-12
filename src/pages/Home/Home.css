@@ -33,6 +33,11 @@
     margin-top: 1rem;
 }
 
+.featured-title {
+    border-bottom: 2px dotted #0093E9;
+    cursor: pointer;
+}
+
 .featured-tag,
 .latest-tag {
     text-decoration: none;
@@ -73,6 +78,16 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     justify-items: center;
+}
+
+.main-details {
+    display: flex;
+    justify-content: space-between;
+}
+
+.main-title {
+    font-size: small;
+    border-bottom: 2px dotted #0093E9;
 }
 
 .hero-section {

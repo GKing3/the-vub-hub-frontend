@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "./write.css";
-
-// JSONPlaceholder as mock backend for the moment
-const API_URL = "https://jsonplaceholder.typicode.com/posts";
+import axios from "axios";
+import { AppContext } from "../../context/AppContext";
 
 const WritePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
+  const { url } = useContext(AppContext);
+
   const handleSubmit = async () => {
+    const response = await axios.post(url + 'posts/');
+    const data = await response.data;
+
+
     if (title.trim() === "" || content.trim() === "") {
       alert("Please fill out both the title and content!");
       return;
@@ -40,7 +45,7 @@ const WritePage = () => {
       const responseData = await response.json();
       console.log("Post submitted successfully:", responseData);
       alert("Post submitted successfully!");
-      // Clear form when post is succesfully submitted
+      // Clear form when post is successfully submitted
       setTitle("");
       setContent("");
       //Error handling

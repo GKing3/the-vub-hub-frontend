@@ -10,6 +10,15 @@ const Home = () => {
   const [blogs, setBlogs] = useState([]);
   const [likes, setLikes] = useState();
 
+  const formatDate = (isodate) => {
+    const date = new Date(isodate);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+
   const handleBlogs = async() => {
     try {
       const response = await axios.get(url + 'posts/');
@@ -31,9 +40,9 @@ const Home = () => {
           {
             blogs.slice(0, 1).map((blog) => (
               <div key={blog.id}>
-                <Link className="featured-tag"> {blog.tags} </Link>
-                <h2> {blog.title} </h2>
-                <p> {blog.created_at} </p>
+                <Link className="featured-tag" onClick={() => navigate(`/posts/${blogs.tags}`)}> {blog.tags} </Link>
+                <h2 className="featured-title" onClick={() => navigate(`/posts/${blog.id}`)}> {blog.title} </h2>
+                <p> {formatDate(blog.created_at)} </p>
               </div>
             ))
           }
@@ -56,11 +65,11 @@ const Home = () => {
               <>
                 <div key={blog.id}>
                   <img src={blog.image_url} alt="Popular Post" />
-                  <div>
-                    <Link> {blog.tags} </Link>
-                    <span> {blog.created_at} </span>
+                  <div className="main-details">
+                    <Link onClick={() => navigate(`/posts/${blogs.tags}`)}> {blog.tags} </Link>
+                    <span> {formatDate(blog.created_at)} </span>
                   </div>
-                  <Link to="/posts/:postId"> {blog.title} </Link>
+                  <Link className="main-title" to={`/posts/${blog.id}`}> {blog.title} </Link>
                 </div>
               </>
             ))
@@ -75,11 +84,11 @@ const Home = () => {
                 <>
                   <div key={blog.id}>
                     <img src={blog.image_url} alt="Latest Posts" />
-                    <div>
-                      <Link> {blog.tags} </Link>
-                      <span> {blog.created_at} </span>
+                    <div className="main-details">
+                      <Link onClick={() => navigate(`/posts/${blogs.tags}`)}> {blog.tags} </Link>
+                      <span> {formatDate(blog.created_at)} </span>
                     </div>
-                    <Link to="/posts/:postId"> {blog.title} </Link>
+                    <Link className="main-title" to={`/posts/${blog.id}`}> {blog.title} </Link>
                   </div>
                 </>
               ))
