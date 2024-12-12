@@ -9,7 +9,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 ;
-  const {userData, access, setAccess} = useContext(AppContext);
+  const {userData, token, setToken} = useContext(AppContext);
   const [blogs, setBlogs] = useState([]);
   const [search, setSearch] = useState('');
 
@@ -29,8 +29,8 @@ const NavBar = () => {
   }
 
   const handleLogout = () => {
-    setAccess(false);
-    localStorage.removeItem('access');
+    setToken(false);
+    localStorage.removeItem('token');
   }
 
   return (
@@ -60,7 +60,7 @@ const NavBar = () => {
         </div>
 
         <div className="nav-buttons">
-          {access ? (
+          {token ? (
             <div className="profile-menu">
               <img
                 src={userData.image || avatar_icon}

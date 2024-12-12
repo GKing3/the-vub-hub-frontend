@@ -7,13 +7,16 @@ export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
     const [userData, setUserData] = useState([]);
-    const [access, setAccess] = useState('');
+    const [token, setToken] = useState('');
 
     const fetchUserData = async() => {
+        if(!token) return;
+
         try {
-            const response = await axios.get(url + 'user/');
-            const data = await response.json();
-            setUserData(data);
+            const {data} = await axios.get(url + 'user/');
+            if(data.success) {
+                setUserData(data.userData)
+            }
         } catch (error) {
             console.log(error);
         }
@@ -27,8 +30,8 @@ export const AppContextProvider = (props) => {
         userData,
         setUserData,
         updateAvatar,
-        access,
-        setAccess,
+        token,
+        setToken,
         url
     }
 

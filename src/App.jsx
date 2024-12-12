@@ -27,6 +27,7 @@ function App() {
           <Route path="/my-blogs" element={<MyBlogs/>}></Route>
           <Route path="/my-favourites" element={<MyFavourites/>}></Route>
           <Route path="/posts/" element={<Blogs/>}></Route>
+          <Route path="/posts/:tag" element={<Blogs/>}/>
           <Route path="/posts/:postId" element={<BlogDetails/>}/>
           <Route path="/news" element={<News />} />
         </Routes>
