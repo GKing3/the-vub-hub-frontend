@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // Hook to get URL parameters
-import "./postDetails.css";
+import "./blogDetails.css";
 
 const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API endpoint
 
