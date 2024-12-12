@@ -8,6 +8,16 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
+  const [likes, setLikes] = useState();
+
+  const formatDate = (isodate) => {
+    const date = new Date(isodate);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
 
   const handleBlogs = async () => {
     try {

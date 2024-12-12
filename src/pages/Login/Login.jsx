@@ -15,7 +15,7 @@ const initialState = {
 const Login = () => {
   const navigate = useNavigate();
 
-  const { url, access, setAccess } = useContext(AppContext);
+  const { url, token, setToken } = useContext(AppContext);
   const [state, setState] = useState(initialState);
 
   const handleChange = (e) => {
@@ -25,26 +25,28 @@ const Login = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
 
+    if(!state.email || !state.password) {
+      toast.error('Please fill out all fields');
+      return;
+    }
+
     try {
       const response = await axios.post(url + 'auth/login', state);
       // console.log(response);
       const data = await response.data;
-      if(data.success) {
-        localStorage.setItem('access', data.access);
-        setAccess(data.access);
-      }
-
-      if(!state.email || !state.password) {
-        toast.error('Please fill out all fields');
-      } else {
+      if(data.token) {
+        localStorage.setItem('token', data.token);
+        setToken(data.token);
         toast.success('Logged in successfully!', {
           onClose: () => {
             navigate('/');
           }
-        });
+        })
+      } else {
+        toast.error('Failed to login. Please check your credentials!');
       }
     } catch (error) {
-      console.log(error)
+      toast.error(error.message);
     }
   }
 

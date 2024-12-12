@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom"; // Hook to get URL parameters
 import "./blogDetails.css";
+<<<<<<< HEAD
+import { AppContext } from "../../context/AppContext";
+=======
+>>>>>>> main
 
-const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API endpoint
+// const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API endpoint
 
-const PostDetail = () => {
+const BlogDetails = () => {
+  const { url } = useContext(AppContext);
   const { postId } = useParams(); // Get the post ID from the URL
-  const [post, setPost] = useState(null);
+  const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -14,12 +19,12 @@ const PostDetail = () => {
     const fetchPost = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_URL}/${postId}`);
+        const response = await fetch(url + `/${postId}`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        setPost(data);
+        setBlog(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -37,10 +42,10 @@ const PostDetail = () => {
       ) : error ? (
         <p className="error">Error fetching post: {error}</p>
       ) : (
-        post && (
+        blog && (
           <div className="post-detail">
-            <h1 className="post-title">{post.title}</h1>
-            <p className="post-content">{post.body}</p>
+            <h1 className="post-title">{blog.title}</h1>
+            <p className="post-content">{blog.body}</p>
             <span className="post-date">{new Date().toLocaleDateString()}</span>
           </div>
         )
@@ -49,4 +54,4 @@ const PostDetail = () => {
   );
 };
 
-export default PostDetail;
+export default BlogDetails;
