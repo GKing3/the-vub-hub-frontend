@@ -1,7 +1,10 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom"; // Hook to get URL parameters
 import "./blogDetails.css";
+<<<<<<< HEAD
 import { AppContext } from "../../context/AppContext";
+=======
+>>>>>>> main
 
 // const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API endpoint
 
