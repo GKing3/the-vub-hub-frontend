@@ -35,6 +35,13 @@ const Home = () => {
               style={{ minWidth: "300px", flex: "0 0 auto", overflow: "hidden" }}
             >
               <div className="card-body">
+              <img
+                src={blog.profile_img}
+                alt={`${blog.username}'s profile`}
+                className="rounded-circle me-2"
+                style={{ width: "30px", height: "30px", objectFit: "cover" }}
+              />
+              <span className="text-secondary fw-bold">{blog.username}</span>
                 <h5 className="card-title" style={{ color: "#2c3e50" }}>{blog.title}</h5>
                 <p className="card-text">{blog.content}</p>
                 <span className="d-block text-muted small mb-2">
@@ -68,6 +75,13 @@ const Home = () => {
               style={{ minWidth: "300px", flex: "0 0 auto", overflow: "hidden" }}
             >
               <div className="card-body">
+              <img
+                src={blog.profile_img}
+                alt={`${blog.username}'s profile`}
+                className="rounded-circle me-2"
+                style={{ width: "30px", height: "30px", objectFit: "cover" }}
+              />
+              <span className="text-secondary fw-bold">{blog.username}</span>
                 <h5 className="card-title" style={{ color: "#2c3e50" }}>{blog.title}</h5>
                 <p className="card-text">{blog.content}</p>
                 <span className="d-block text-muted small mb-2">
