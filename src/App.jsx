@@ -12,6 +12,7 @@ import MyFavourites from './pages/MyFavourites/MyFavourites';
 import Blogs from './pages/Blogs/Blogs';
 import Register from "./pages/Register/Register";
 import BlogDetails from "./pages/BlogDetails/BlogDetails";
+import News from './pages/News/news';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/my-favourites" element={<MyFavourites/>}></Route>
           <Route path="/posts/" element={<Blogs/>}></Route>
           <Route path="/posts/:postId" element={<BlogDetails/>}/>
+          <Route path="/news" element={<News />} />
         </Routes>
         <Footer/>
       </AppContextProvider>
