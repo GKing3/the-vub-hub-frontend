@@ -6,16 +6,16 @@ import { url } from "../Api";
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
-    const [userData, setUserData] = useState([]);
+    const [userData, setUserData] = useState(null);
     const [token, setToken] = useState('');
 
     const fetchUserData = async() => {
         if(!token) return;
 
         try {
-            const {data} = await axios.get(url + 'user/');
-            if(data.success) {
-                setUserData(data.userData)
+            const {data} = await axios.get(url + 'auth/login/status');
+            if(data.code == 200) {
+                setUserData(data.user);
             }
         } catch (error) {
             console.log(error);
@@ -37,7 +37,8 @@ export const AppContextProvider = (props) => {
 
     useEffect(() => {
         fetchUserData();
-    }, []);
+    }, [token]);
+
 
     return (
         <AppContext.Provider value={value}>

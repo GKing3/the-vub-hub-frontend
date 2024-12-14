@@ -14,7 +14,7 @@ const Footer = () => {
     <div>
       <div className="footer-container">
         <div>
-          <Link className="logo" to='/'>
+          <Link className="logo-f" to='/'>
             <h2> The VUB Hub </h2>
           </Link>
         </div>

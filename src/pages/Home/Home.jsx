@@ -1,4 +1,4 @@
-//import "./Home.css";
+import "./Home.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { url } from "../../Api";
@@ -35,12 +35,12 @@ const Home = () => {
   return (
     <div className="container py-5">
       {/* Popular Posts Section */}
-      <div className="popular-container mb-5">
+      <div className="popular-container mb-4">
         <h2 className="text-center mb-4">Popular Posts</h2>
-        <div className="d-flex overflow-auto">
+        <div className="d-flex overflow-auto scroll">
           {blogs.map((blog) => (
             <div
-              className="card me-3 shadow-sm hover-card border"
+              className="card me-5 shadow-sm hover-card border"
               key={blog.id}
               style={{ minWidth: "300px", flex: "0 0 auto", overflow: "hidden" }}
             >
@@ -51,20 +51,20 @@ const Home = () => {
                 className="rounded-circle me-2"
                 style={{ width: "30px", height: "30px", objectFit: "cover" }}
               />
-              <span className="text-secondary fw-bold">{blog.username}</span>
-                <h5 className="card-title" style={{ color: "#2c3e50" }}>{blog.title}</h5>
-                <p className="card-text">{blog.content}</p>
-                <span className="d-block text-muted small mb-2">
-                  {new Date(blog.created_at).toLocaleDateString()}
-                </span>
-                <span className="badge" style={{ backgroundColor: "#34495e", color: "white" }}>
-                  {blog.tags}
-                </span>
+              <span className="text-secondary fw-bold mb-4">{blog.username}</span>
+              <h5 className="card-title" style={{ color: "#2c3e50" }}>{blog.title}</h5>
+              <p className="card-text">{blog.content}</p>
+              <span className="d-block text-muted small mb-2">
+                {new Date(blog.created_at).toLocaleDateString()}
+              </span>
+              <span className="badge" style={{ backgroundColor: "#34495e", color: "white" }}>
+                {blog.tags}
+              </span>
               </div>
               {blog.image_url && (
                 <img
                   src={blog.image_url}
-                  alt={blog.title || "Blog Post"}
+                  alt={blog.title }
                   className="card-img-bottom"
                   style={{ height: "200px", objectFit: "cover", width: "100%" }}
                 />

@@ -8,3 +8,8 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.logo-f{
+    text-decoration: none; 
+    color:#34495e; 
+}

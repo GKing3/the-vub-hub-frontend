@@ -4,6 +4,7 @@ import { Bounce, ToastContainer, toast } from "react-toastify";
 import 'react-toastify/ReactToastify.css';
 // import { url } from "../../Api";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 
@@ -15,7 +16,7 @@ const initialState = {
 const Login = () => {
   const navigate = useNavigate();
 
-  const { url, token, setToken } = useContext(AppContext);
+  const { url, token, setToken} = useContext(AppContext);
   const [state, setState] = useState(initialState);
 
   const handleChange = (e) => {
@@ -32,11 +33,12 @@ const Login = () => {
 
     try {
       const response = await axios.post(url + 'auth/login', state);
-      // console.log(response);
+      
       const data = await response.data;
       if(data.token) {
         localStorage.setItem('token', data.token);
         setToken(data.token);
+        //login(data.token)
         toast.success('Logged in successfully!', {
           onClose: () => {
             navigate('/');
