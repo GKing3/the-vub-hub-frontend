@@ -1,51 +1,53 @@
 import { createContext, useEffect, useState } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import axios from "axios";
 import { url } from "../Api";
 
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
-    const [userData, setUserData] = useState([]);
-    const [token, setToken] = useState('');
+  const [userData, setUserData] = useState(null);
+  const [token, setToken] = useState("");
 
-    const fetchUserData = async() => {
-        if(!token) return;
+  const fetchUserData = async () => {
+    if (!token) return;
 
-        try {
-            const {data} = await axios.get(url + 'user/');
-            if(data.success) {
-                setUserData(data.userData)
-            }
-        } catch (error) {
-            console.log(error);
-        }
+    try {
+      const { data } = await axios.get(url + "auth/login/status");
+      if (data.code == 200) {
+        setUserData(data.user);
+      }
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    const updateAvatar = (newAvatar) => {
-        setUserData((prev) => ({...prev, image: newAvatar}));
-    }
+  const updateAvatar = (newAvatar) => {
+    setUserData((prev) => ({ ...prev, image: newAvatar }));
+  };
 
-    const value = {
-        userData,
-        setUserData,
-        updateAvatar,
-        token,
-        setToken,
-        url
-    }
+  const value = {
+    userData,
+    setUserData,
+    updateAvatar,
+    token,
+    setToken,
+    url,
+  };
 
-    useEffect(() => {
-        fetchUserData();
-    }, []);
+  useEffect(() => {
+    fetchUserData();
+  }, [token]);
 
-    return (
-        <AppContext.Provider value={value}>
-            {props.children}
-        </AppContext.Provider>
-    );
-}
+  //useEffect(() => {
+  //  console.log("Updated userData: ", userData);
+  //}, [userData]);
+
+  return (
+    <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
+  );
+};
 
 AppContextProvider.propTypes = {
-    children: PropTypes.node.isRequired,
-}
+  children: PropTypes.node.isRequired,
+};

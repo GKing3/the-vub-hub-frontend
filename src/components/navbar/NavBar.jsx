@@ -8,35 +8,34 @@ import { AppContext } from "../../context/AppContext";
 const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-;
-  const {userData, token, setToken} = useContext(AppContext);
+  const { userData, token, setToken } = useContext(AppContext);
   const [blogs, setBlogs] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const handleSearch = (e) => {
-    if(e.key === 'Enter') {
+    if (e.key === "Enter") {
       const query = e.target.value;
 
-      if(location.pathname === '/posts/') {
+      if (location.pathname === "/posts/") {
         const newSearch = `?tag=${query}`;
-        if(location.search !== newSearch) {
+        if (location.search !== newSearch) {
           navigate({ pathname: location.pathname, search: newSearch });
         }
       } else {
         navigate(`/posts/?tag=${query}`);
       }
     }
-  }
+  };
 
   const handleLogout = () => {
     setToken(false);
-    localStorage.removeItem('token');
-  }
+    localStorage.removeItem("token");
+  };
 
   return (
     <div>
       <div className="navbar">
-        <Link className="logo" to='/'>
+        <Link className="logo" to="/">
           <h2> The VUB Hub </h2>
         </Link>
 
@@ -45,8 +44,8 @@ const NavBar = () => {
             <NavLink className="nav-link" to="/">
               <li> Home </li>
             </NavLink>
-            <NavLink className="nav-link">
-              <li> Write </li>
+            <NavLink className="nav-link" to="/Threads">
+              <li> Threads </li>
             </NavLink>
             <NavLink className="nav-link" to="/news">
               <li> News </li>
@@ -55,7 +54,11 @@ const NavBar = () => {
         </div>
 
         <div className="search-container">
-          <input type="text" placeholder="Search for blogs" onKeyDown={handleSearch}/>
+          <input
+            type="text"
+            placeholder="Search for blogs"
+            onKeyDown={handleSearch}
+          />
           <img className="search_icon" src={search_icon} alt="Search icon" />
         </div>
 
@@ -63,7 +66,7 @@ const NavBar = () => {
           {token ? (
             <div className="profile-menu">
               <img
-                src={userData.image || avatar_icon}
+                src={avatar_icon} //userData.image ||
                 alt="User profile avatar"
                 className="avatar"
               />
@@ -71,7 +74,10 @@ const NavBar = () => {
                 <div className="profile-list">
                   <p onClick={() => navigate("my-profile")}> Profile </p>
                   <p onClick={() => navigate("my-blogs")}> My Blogs </p>
-                  <p onClick={() => navigate("my-favourites")}> My Favourites </p>
+                  <p onClick={() => navigate("my-favourites")}>
+                    {" "}
+                    My Favourites{" "}
+                  </p>
                   <p onClick={handleLogout}> Logout </p>
                 </div>
               </div>

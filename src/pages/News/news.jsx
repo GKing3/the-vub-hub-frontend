@@ -1,16 +1,15 @@
 import "./news.css";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const NewsTab = () => {
-
-  //useState hooks => Voor het beheren van state. 
+  //useState hooks => Voor het beheren van state.
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [comments, setComments] = useState({}); 
-  const [newComments, setNewComments] = useState({}); 
+  const [comments, setComments] = useState({});
+  const [newComments, setNewComments] = useState({});
 
   //useEffect: Doet iets automatisch als er iets verandert, zoals nieuwe data ophalen.
   useEffect(() => {
@@ -28,14 +27,14 @@ const NewsTab = () => {
     fetchNews();
   }, []);
 
-  
-
   //haal comments van een artikel
   const fetchComments = async (articleId) => {
     try {
-      const response = await axios.get(`http://localhost:8000/comments/article/${articleId}`);
-      setComments((prevComments) => ({ 
-        ...prevComments,            // copy vorige state 
+      const response = await axios.get(
+        `http://localhost:8000/comments/article/${articleId}`
+      );
+      setComments((prevComments) => ({
+        ...prevComments, // copy vorige state
         [articleId]: response.data, //nieuwe key-value-paar toe (id, comments)
       }));
     } catch (err) {
@@ -50,7 +49,6 @@ const NewsTab = () => {
     }
   };
 
-
   const handleAddComment = async (articleId) => {
     const content = newComments[articleId];
     if (!content || content.trim() === "") {
@@ -59,12 +57,16 @@ const NewsTab = () => {
     }
 
     try {
-      const response = await axios.post(`http://localhost:8000/comments/article/${articleId}`, {
-        user: 1, // verander dit, get de id of de user dat ingelogd is
-        content,
-      });
+      const response = await axios.post(
+        `http://localhost:8000/comments/article/${articleId}`,
+        {
+          user: 1, // verander dit, get de id of de user dat ingelogd is
+          content,
+        }
+      );
 
-      setComments((prevComments) => ({ //doe die de nieuwe comment in de commenten list
+      setComments((prevComments) => ({
+        //doe die de nieuwe comment in de commenten list
         ...prevComments,
         [articleId]: [
           ...(prevComments[articleId] || []), // nieuw paar of vervang
@@ -90,12 +92,11 @@ const NewsTab = () => {
   }
 
   return (
-    <div className="container my-4"> 
-     <div className="row">
+    <div className="container my-4">
+      <div className="row">
         {newsData.map((article) => (
           <div key={article.id} className="col-md-4 mb-4">
             <div className="card h-100 custom-card">
-              
               <img
                 src={article.urlToImage}
                 alt={article.title}
