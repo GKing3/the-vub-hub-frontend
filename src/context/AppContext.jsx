@@ -23,15 +23,7 @@ export const AppContextProvider = (props) => {
         } catch (error) {
             console.log(error);
         }
-    }
-        try {
-            const {data} = await axios.get(url + 'auth/login/status');
-            if(data.code == 200) {
-                setUserData(data.user);
-            }
-        } catch (error) {
-            console.log(error);
-        }
+      
     }
 
     const fetchDetails = async () => {
@@ -55,18 +47,7 @@ export const AppContextProvider = (props) => {
         }
     }
 
-    // const fetchUserData = async() => {
-    //     if(!token) return;
 
-    //     try {
-    //         const {data} = await axios.get(url + 'user/'); // auth/login/status
-    //         if(data.success) {
-    //             setUserData(data.userData)
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
 
   const updateAvatar = (newAvatar) => {
     setUserData((prev) => ({ ...prev, image: newAvatar }));
