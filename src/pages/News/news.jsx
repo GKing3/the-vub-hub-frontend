@@ -6,8 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { AppContext } from "../../context/AppContext";
 
 const NewsTab = () => {
-
-  //useState hooks => Voor het beheren van state. 
+  //useState hooks => Voor het beheren van state.
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,8 +31,6 @@ const NewsTab = () => {
     fetchNews();
   }, []);
 
-  
-
   //haal comments van een artikel
   const fetchComments = async (articleId) => {
     try {
@@ -54,7 +51,6 @@ const NewsTab = () => {
       }
     }
   };
-
 
   const handleAddComment = async (articleId) => {
     if (!userData || !userData.id) {
@@ -101,12 +97,11 @@ const NewsTab = () => {
   }
 
   return (
-    <div className="container my-4"> 
-     <div className="row">
+    <div className="container my-4">
+      <div className="row">
         {newsData.map((article) => (
           <div key={article.id} className="col-md-4 mb-4">
             <div className="card h-100 custom-card">
-              
               <img
                 src={article.urlToImage}
                 alt={article.title}
@@ -185,3 +180,4 @@ const NewsTab = () => {
 };
 
 export default NewsTab;
+

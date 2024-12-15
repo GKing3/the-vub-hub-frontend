@@ -3,28 +3,22 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { url } from "../../Api";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Home = () => {
+  
   const [blogs, setBlogs] = useState([]);
-  const [likes, setLikes] = useState();
 
-  const formatDate = (isodate) => {
-    const date = new Date(isodate);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
 
   const handleBlogs = async () => {
     try {
-      const response = await axios.get(url + "posts/");
+      const response = await axios.get(url + "api/post-with-locations");
+      console.log(response)
       setBlogs(response.data);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching posts with locations:", error);
     }
   };
 
@@ -114,8 +108,8 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Map Section */}
-      <div className="map-container mb-5">
+     {/* Map Section */}
+     <div className="map-container mb-5">
         <h2 className="text-center mb-4">Explore the Map</h2>
         <MapContainer
           center={[50.8503, 4.3517]}
@@ -127,11 +121,49 @@ const Home = () => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-          <Marker position={[50.8503, 4.3517]}>
-            <Popup>Brussels, Belgium</Popup>
-          </Marker>
-        </MapContainer>
-      </div>
+          {blogs.map((blog) =>
+            blog.location ? (
+              <Marker
+                key={blog.id}
+                position={[blog.location.lat, blog.location.lng]}
+                icon={L.icon({
+                  iconUrl: blog.profile_img || "default-profile.png", // Zorg voor een fallback-image
+                  popupAnchor: [0, -40], // Popup net boven de marker
+                  className: "custom-marker", // Eventueel extra styling
+                })}
+              >
+                <Popup>
+  <div style={{ textAlign: "center" }}>
+    <strong style={{ fontSize: "16px", display: "block", marginBottom: "10px" }}>
+      {blog.title}
+    </strong>
+    {blog.content && <p style={{ fontSize: "14px", lineHeight: "1.5" }}>{blog.content}</p>}
+    {blog.image_url && (
+      <img
+        src={blog.image_url}
+        alt={blog.title}
+        style={{
+          width: "100%",
+          maxHeight: "200px",
+          objectFit: "cover",
+          borderRadius: "8px",
+          marginTop: "10px", // Ruimte boven de afbeelding
+        }}
+      />
+    )}
+    <em style={{ fontSize: "12px", color: "#555", display: "block", marginTop: "10px" }}>
+      - {blog.username}
+    </em>
+  </div>
+</Popup>
+
+            </Marker>
+                ) : null
+                  )}
+          </MapContainer>
+          </div>
+  
+
     <div className="hero-section text-center py-5 bg-light">
     <div className="hero-description">
       <h2> Discover, Share and Connect </h2>

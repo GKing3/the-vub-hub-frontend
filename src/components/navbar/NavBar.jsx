@@ -1,9 +1,10 @@
 import "./navBar.css";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import {  useLocation, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
-import search_icon from "../../assets/search.png";
 import avatar_icon from "../../assets/avatar.png";
 import { AppContext } from "../../context/AppContext";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -28,10 +29,22 @@ const NavBar = () => {
     }
   };
 
-  const handleLogout = () => {
-    setToken(false);
-    localStorage.removeItem("token");
-  };
+
+  const handleLogout = async () => {
+    try {
+        await axios.post('http://localhost:8000/auth/logout'); 
+        setToken(false);
+        sessionStorage.removeItem('userData');
+        toast.success('Logged out successfully!', {
+          onClose: () => {
+            navigate("/");
+          },
+        });
+    } catch (err) {
+        toast.error('An error occurred while logging out.');
+    }
+};
+
 
   return (
     <body>
@@ -59,8 +72,8 @@ const NavBar = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/write">
-                  Write
+                <a className="nav-link" href="/Threads">
+                  Threads
                 </a>
               </li>
               <li className="nav-item">
@@ -79,7 +92,7 @@ const NavBar = () => {
             </form>
 
             <div className="login">
-              {token ? (
+              {userData ? (
                 <div className="dropdown">
                   <img
                     src={avatar_icon}
@@ -92,9 +105,7 @@ const NavBar = () => {
                     <ul className="custom-dropdown">
                       <li onClick={() => navigate("my-profile")}>Profile</li>
                       <li onClick={() => navigate("my-blogs")}>My Blogs</li>
-                      <li onClick={() => navigate("my-favourites")}>
-                        My Favourites
-                      </li>
+                      <li onClick={() => navigate("my-favourites")}>My Favourites</li>
                       <li onClick={handleLogout}>Logout</li>
                     </ul>
                   )}

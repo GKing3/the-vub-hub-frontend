@@ -1,3 +1,8 @@
-.scroll {
-    overflow: hidden !important;
+.custom-marker {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* Maakt de afbeelding rond */
+    object-fit: cover; /* Zorgt dat de afbeelding goed past */
+    border: 2px solid white; /* Optioneel: een rand om de cirkel */
   }
+  
