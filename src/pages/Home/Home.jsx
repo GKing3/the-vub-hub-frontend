@@ -5,10 +5,13 @@ import { url } from "../../Api";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
-  const [likes, setLikes] = useState();
+  const navigate = useNavigate();
+  // const [likesCount, setLikesCount] = useState(0);
+  // const [isLiked, setIsLiked] = useState(false);
 
   const formatDate = (isodate) => {
     const date = new Date(isodate);
@@ -27,6 +30,16 @@ const Home = () => {
       console.log(error);
     }
   };
+
+  // const handleLikes = () => {
+  //   if(isLiked) {
+  //     setLikesCount(likesCount - 1);
+  //     setIsLiked(false);
+  //   } else {
+  //     setLikesCount(likesCount + 1);
+  //     setIsLiked(true);
+  //   }
+  // }
 
   useEffect(() => {
     handleBlogs();
@@ -48,7 +61,7 @@ const Home = () => {
                 <h5 className="card-title" style={{ color: "#2c3e50" }}>{blog.title}</h5>
                 <p className="card-text">{blog.content}</p>
                 <span className="d-block text-muted small mb-2">
-                  {new Date(blog.created_at).toLocaleDateString()}
+                  {formatDate(blog.created_at)}
                 </span>
                 <span className="badge" style={{ backgroundColor: "#34495e", color: "white" }}>
                   {blog.tags}
