@@ -7,8 +7,8 @@ import { jwtDecode } from "jwt-decode";
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
-    const [userData, setUserData] = useState([]);
-    const [token, setToken] = useState(localStorage.getItem('authToken') || '');
+    const [userData, setUserData] = useState(() => sessionStorage.getItem('userData') || null);
+    const [token, setToken] = useState('');
     const [users, setUsers] = useState([]);
 
   const fetchUserData = async () => {
@@ -18,10 +18,12 @@ export const AppContextProvider = (props) => {
             const {data} = await axios.get(url + 'auth/login/status');
             if(data.code == 200) {
                 setUserData(data.user);
+                sessionStorage.setItem('userData', data.user);
             }
         } catch (error) {
             console.log(error);
         }
+      
     }
 
     const fetchDetails = async () => {
@@ -45,18 +47,7 @@ export const AppContextProvider = (props) => {
         }
     }
 
-    // const fetchUserData = async() => {
-    //     if(!token) return;
 
-    //     try {
-    //         const {data} = await axios.get(url + 'user/'); // auth/login/status
-    //         if(data.success) {
-    //             setUserData(data.userData)
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
 
   const updateAvatar = (newAvatar) => {
     setUserData((prev) => ({ ...prev, image: newAvatar }));
@@ -75,6 +66,7 @@ export const AppContextProvider = (props) => {
         fetchUserData();
         fetchDetails();
     }, [token]);
+
 
   return (
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>

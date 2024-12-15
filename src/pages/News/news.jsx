@@ -1,15 +1,19 @@
 import "./news.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
+axios.defaults.withCredentials = true;
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { AppContext } from "../../context/AppContext";
 
 const NewsTab = () => {
   //useState hooks => Voor het beheren van state.
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [comments, setComments] = useState({});
+  const [comments, setComments] = useState({}); 
   const [newComments, setNewComments] = useState({});
+  const {userData} = useContext(AppContext);
+
 
   //useEffect: Doet iets automatisch als er iets verandert, zoals nieuwe data ophalen.
   useEffect(() => {
@@ -30,15 +34,14 @@ const NewsTab = () => {
   //haal comments van een artikel
   const fetchComments = async (articleId) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/comments/article/${articleId}`
-      );
-      setComments((prevComments) => ({
-        ...prevComments, // copy vorige state
-        [articleId]: response.data, //nieuwe key-value-paar toe (id, comments)
+      const response = await axios.get(`http://localhost:8000/comments/article/${articleId}`);
+      setComments((prevComments) => ({ 
+        ...prevComments,             
+        [articleId]: response.data, 
       }));
     } catch (err) {
       if (err.response?.status === 404) {
+        alert("No comments found for this article.");
         setComments((prevComments) => ({
           ...prevComments,
           [articleId]: [],
@@ -50,6 +53,11 @@ const NewsTab = () => {
   };
 
   const handleAddComment = async (articleId) => {
+    if (!userData || !userData.id) {
+      alert("You need to be logged in to add a comment.");
+      return;
+    }
+
     const content = newComments[articleId];
     if (!content || content.trim() === "") {
       alert("Comment cannot be empty!");
@@ -57,20 +65,17 @@ const NewsTab = () => {
     }
 
     try {
-      const response = await axios.post(
-        `http://localhost:8000/comments/article/${articleId}`,
-        {
-          user: 1, // verander dit, get de id of de user dat ingelogd is
-          content,
-        }
-      );
+    
+      const response = await axios.post(`http://localhost:8000/comments/article/${articleId}`, {
+        user: userData.id,
+        content,
+      });
 
-      setComments((prevComments) => ({
-        //doe die de nieuwe comment in de commenten list
+      setComments((prevComments) => ({ 
         ...prevComments,
         [articleId]: [
-          ...(prevComments[articleId] || []), // nieuw paar of vervang
-          { content: response.data.content, user_id: response.data.user_id },
+          ...(prevComments[articleId] || []), 
+          { content: response.data.content, user_id: userData.id, user_name: userData.name, image_profile: userData.image_profile_url },
         ],
       }));
 
@@ -126,33 +131,45 @@ const NewsTab = () => {
                 {comments[article.id] && comments[article.id].length > 0 && (
                   <ul className="list-unstyled mt-2">
                     {comments[article.id].map((comment, idx) => (
-                      <li key={idx} className="border-bottom py-2">
-                        <p className="mb-0 fw-bold">
-                          {comment.user_name || "Anonymous"}:
-                        </p>
-                        <p className="mb-0">{comment.content}</p>
+                      <li key={idx} className="border-bottom py-2 d-flex align-items-center">
+                        <img
+                          src={comment.image_profile}
+                          alt={comment.user_name}
+                          className="rounded-circle me-2"
+                          style={{ width: "30px", height: "30px" }}
+                        />
+                        <div>
+                          <p className="mb-0 fw-bold">
+                            {comment.user_name}:
+                          </p>
+                          <p className="mb-0">{comment.content}</p>
+                        </div>
                       </li>
                     ))}
                   </ul>
                 )}
-                <textarea
-                  className="form-control form-control-sm mt-2"
-                  rows="2"
-                  value={newComments[article.id] || ""}
-                  onChange={(e) =>
-                    setNewComments((prevNewComments) => ({
-                      ...prevNewComments,
-                      [article.id]: e.target.value,
-                    }))
-                  }
-                  placeholder="Write a comment"
-                />
-                <button
-                  className="btn btn-primary btn-sm mt-2"
-                  onClick={() => handleAddComment(article.id)}
-                >
-                  Add comment
-                </button>
+                {comments[article.id] && (
+                  <textarea
+                    className="form-control form-control-sm mt-2"
+                    rows="2"
+                    value={newComments[article.id] || ""}
+                    onChange={(e) =>
+                      setNewComments((prevNewComments) => ({
+                        ...prevNewComments,
+                        [article.id]: e.target.value,
+                      }))
+                    }
+                    placeholder="Write a comment"
+                  />
+                )}
+                {comments[article.id] && (
+                  <button
+                    className="btn btn-primary btn-sm mt-2"
+                    onClick={() => handleAddComment(article.id)}
+                  >
+                    Add comment
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -163,3 +180,4 @@ const NewsTab = () => {
 };
 
 export default NewsTab;
+
