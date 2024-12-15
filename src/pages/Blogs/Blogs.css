@@ -24,10 +24,36 @@
 
 .blog-details {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     margin-bottom: .5rem;
     font-size: 1rem;
     color: #0093E9;
+}
+
+.author-details {
+    display: flex;
+    gap: .4rem;
+}
+
+.author-details p {
+    margin-top: .4rem;
+}
+
+.author-details a {
+    text-decoration: none;
+    color: #333;
+    border-bottom: 2px dotted #0093E9;
+}
+
+.author-details a:hover {
+    color: #0093E9;
+}
+
+.author-details img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .tags {
@@ -40,6 +66,8 @@
 }
 
 .tags a {
+    text-decoration: none;
+    color: #333;
     width: 100%;
     padding: .4rem 4rem;
     border: 1px solid #333;
