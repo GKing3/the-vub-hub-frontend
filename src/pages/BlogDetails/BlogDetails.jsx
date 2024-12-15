@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { AppContext } from "../../context/AppContext";
+import { useNavigate } from "react-router-dom";
 import "./blogDetails.css";
 
 const API_URL = "http://localhost:8000"; // Backend URL
@@ -9,14 +11,21 @@ const BlogDetails = () => {
   // UseParams is used for extracting postId from URL
   const { blogId } = useParams();
 
+  const { userData } = useContext(AppContext);
+  const navigate = useNavigate();
+
   // State initialization
-  const [post, setPost] = useState(null);
+  const [post, setPost] = useState([[]]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
   const [loading, setLoading] = useState(true); // tracks wether data is still being fetched
   const [error, setError] = useState(null); // Holds any error messages if the data fetching fails.
+  const [newTitle, setNewTitle] = useState("");
+  const [newContent, setNewContent] = useState("");
+  const [editingPost, setEditingPost] = useState(null);
+  const [editFlag, setEditFlag] = useState(false);
 
   // Idea? Pagination for comments, fetching comments incrementally
   // Fetching post details (post, comments, likes/dislikes)
@@ -46,7 +55,7 @@ const BlogDetails = () => {
     };
 
     fetchPostDetails();
-  }, [blogId]); // Dependancy array, useEffect will only run when postId changes, thus it won't run for every rendering which isn't performant. [] empty means that it will only run one time.
+  }, [blogId, editFlag]); // Dependancy array, useEffect will only run when postId changes, thus it won't run for every rendering which isn't performant. [] empty means that it will only run one time.
 
   // Adding a new comment
   const handleAddComment = async () => {
@@ -73,12 +82,6 @@ const BlogDetails = () => {
     try {
       //console.log(commentId);
       await axios.delete(`${API_URL}/comments/${blogId}/${commentId}`);
-      //console.log("Before filtering:", comments);
-      //console.log("Comment ID to remove:", commentId);
-      //console.log(
-      //  "Filtered comments:",
-      //  comments.filter((comment) => comment.commentId !== commentId)
-      //);
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.commentId !== commentId)
       );
@@ -88,17 +91,13 @@ const BlogDetails = () => {
     }
   };
 
-  // Adding a like
+  // handling of likes
   const handleLike = async () => {
     try {
       // Check if the user has already reacted
       const reactionResponse = await axios.get(
         `${API_URL}/react/reaction/${blogId}`
       );
-
-      //console.log(reactionResponse);
-      //console.log(reactionResponse.data);
-      //console.log(reactionResponse.data.reaction);
 
       if (reactionResponse.data.reaction === "like") {
         // User has already liked the post, so remove the like
@@ -126,19 +125,13 @@ const BlogDetails = () => {
     }
   };
 
-  // Removing a like
-
-  // Adding a dislike
+  // handling of dislikes
   const handleDislike = async () => {
     try {
       // Check if the user has already reacted
       const reactionResponse = await axios.get(
         `${API_URL}/react/reaction/${blogId}`
       );
-
-      //console.log(reactionResponse);
-      //console.log(reactionResponse.data);
-      //console.log(reactionResponse.data.reaction);
 
       if (reactionResponse.data.reaction === "dislike") {
         // User has already disliked the post, so remove the dislike (decrement)
@@ -166,6 +159,35 @@ const BlogDetails = () => {
     }
   };
 
+  const handleEditPost = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put(`${API_URL}/posts/${blogId}`, {
+        title: newTitle,
+        content: newContent,
+      });
+      if (response.status === 200) {
+        // Close mform and change editFlag to refresh post so that it shows the change
+        setEditingPost(null);
+        if (editFlag) {
+          setEditFlag(false);
+        } else setEditFlag(true);
+      }
+    } catch (err) {
+      console.error("Error editing post:", err);
+    }
+  };
+
+  const handleDeletePost = async (e) => {
+    try {
+      const response = await axios.delete(`${API_URL}/posts/${blogId}`);
+      navigate("/Threads");
+    } catch (err) {
+      console.error("Error removing post:", err);
+      alert("Failed to remove post. Please try again.");
+    }
+  };
+
   if (loading) {
     return <div className="loading">Loading post...</div>;
   }
@@ -175,11 +197,59 @@ const BlogDetails = () => {
   }
 
   //console.log(comments);
+  //console.log(userData.image_profile_url);
 
   return (
     <div className="post-detail-container">
       {post && (
         <div className="post-detail">
+          {/* edit button */}
+          {post.authorId === userData.id && (
+            <div>
+              <button
+                className="create-thread-button"
+                onClick={() => setEditingPost(post.id)}
+              >
+                Edit
+              </button>
+              <button
+                className="create-thread-button"
+                onClick={() => handleDeletePost(post.id)}
+              >
+                Delete
+              </button>
+            </div>
+          )}
+
+          {editingPost && (
+            <div className="edit-post-modal">
+              <form onSubmit={handleEditPost}>
+                <input
+                  type="text"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder="Edit title"
+                />
+                <textarea
+                  value={newContent}
+                  onChange={(e) => setNewContent(e.target.value)}
+                  placeholder="Edit content"
+                ></textarea>
+                <button type="submit">Save Changes</button>
+                <button onClick={() => setEditingPost(null)}>Cancel</button>
+              </form>
+            </div>
+          )}
+
+          {/* user info */}
+          <div className="post-author">
+            <img
+              className="author-profile-pic"
+              src={userData.image_profile_url}
+              alt={`${userData.name}'s profile`}
+            />
+            <span className="author-name">{userData.name}</span>
+          </div>
           {/* Post Title */}
           <h1 className="post-title">{post.title}</h1>
           {/* Post Content */}
