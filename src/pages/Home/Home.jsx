@@ -6,11 +6,23 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   
   const [blogs, setBlogs] = useState([]);
+  const navigate = useNavigate();
+  // const [likesCount, setLikesCount] = useState(0);
+  // const [isLiked, setIsLiked] = useState(false);
 
+  const formatDate = (isodate) => {
+    const date = new Date(isodate);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
 
   const handleBlogs = async () => {
     try {
@@ -21,6 +33,16 @@ const Home = () => {
       console.error("Error fetching posts with locations:", error);
     }
   };
+
+  // const handleLikes = () => {
+  //   if(isLiked) {
+  //     setLikesCount(likesCount - 1);
+  //     setIsLiked(false);
+  //   } else {
+  //     setLikesCount(likesCount + 1);
+  //     setIsLiked(true);
+  //   }
+  // }
 
   useEffect(() => {
     handleBlogs();
