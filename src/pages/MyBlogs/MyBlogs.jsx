@@ -1,34 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import "./myBlogs.css";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { AppContext } from "../../context/AppContext";
 
-const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API endpoint
+const API_URL = "http://localhost:8000"; // Backend URL
 
 const MyBlogs = () => {
   const [posts, setPosts] = useState([]); // State to store fetched posts
   const [loading, setLoading] = useState(true); // State to manage loading status
   const [error, setError] = useState(null); // State to manage errors
+  const { userData } = useContext(AppContext);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         setLoading(true); // Start loading
-        const response = await fetch(API_URL);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-
-        // Filter posts to simulate "My Blogs" (e.g., filter by userId)
-        const userPosts = data.filter((post) => post.userId === 1); // Example userId: 1
-        setPosts(userPosts);
+        const response = await axios.get(
+          API_URL + `/posts/user/${userData.id}`
+        );
+        setPosts(response.data);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false); // Stop loading
       }
     };
-
     fetchPosts();
   }, []);
 
@@ -47,11 +44,11 @@ const MyBlogs = () => {
             <li key={post.id} className="post-item">
               <h2 className="post-title">{post.title}</h2>
               <p className="post-content">
-                {post.body.length > 100
-                  ? `${post.body.substring(0, 100)}...`
-                  : post.body}
+                {post.content.length > 100
+                  ? `${post.content.substring(0, 100)}...`
+                  : post.content}
               </p>
-              <Link to={`/post-detail/${post.id}`} className="read-more">
+              <Link to={`/blogs/${post.id}`} className="read-more">
                 Read More
               </Link>
               <span className="post-date">

@@ -52,20 +52,9 @@ const ThreadPage = () => {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem("token");
-      console.log(token);
-
-      if (!token) {
-        alert("You must be logged in to create a thread.");
-        return;
-      }
-
-      const response = await axios.post(
-        API_URL + "/threads/",
-        { title: newThreadTitle },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
+      const response = await axios.post(API_URL + "/threads/", {
+        title: newThreadTitle,
+      });
       if (response.status === 201) {
         const { threadId, title } = response.data;
         setThreads([...threads, { id: threadId, title }]);
@@ -80,6 +69,36 @@ const ThreadPage = () => {
       }
     }
   };
+
+  //    try {
+  //      const token = localStorage.getItem("token");
+  //      console.log(token);
+  //
+  //      if (!token) {
+  //        alert("You must be logged in to create a thread.");
+  //        return;
+  //      }
+  //
+  //      const response = await axios.post(
+  //        API_URL + "/threads/",
+  //        { title: newThreadTitle },
+  //        { headers: { Authorization: `Bearer ${token}` } }
+  //      );
+  //
+  //      if (response.status === 201) {
+  //        const { threadId, title } = response.data;
+  //        setThreads([...threads, { id: threadId, title }]);
+  //        closeForm(); // close form after creating thread
+  //      }
+  //    } catch (error) {
+  //      if (error.response && error.response.data) {
+  //        alert(error.response.data.error || "Er ging iets mis");
+  //      } else {
+  //        console.error("Fout bij het maken van de thread:", error);
+  //        alert("Er ging iets mis bij het verbinden met de server.");
+  //      }
+  //    }
+  //  };
 
   return (
     <div className="thread-page">

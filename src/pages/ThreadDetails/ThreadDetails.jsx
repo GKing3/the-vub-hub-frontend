@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import "./threadDetails.css";
@@ -17,6 +17,7 @@ const ThreadDetailPage = () => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { userData } = useContext(AppContext);
+  const navigate = useNavigate();
 
   // Opens the form for creating a new thread
   const openForm = () => setIsFormOpen(true);
@@ -98,6 +99,16 @@ const ThreadDetailPage = () => {
     }
   };
 
+  const handleDeleteThread = async (threadId) => {
+    try {
+      await axios.delete(`${API_URL}/threads/${threadId}`);
+      navigate("/Threads");
+    } catch (err) {
+      console.error("Error removing thread:", err);
+      alert("Failed to remove thread. Please try again.");
+    }
+  };
+
   if (isLoading) return <p>Loading...</p>;
 
   return (
@@ -107,6 +118,12 @@ const ThreadDetailPage = () => {
           <header>
             {/* thread object is given in an array */}
             <h1>{thread[0].title}</h1>
+            <button
+              className="create-post-button"
+              onClick={() => handleDeleteThread(threadId)}
+            >
+              Delete thread
+            </button>
             <button className="create-post-button" onClick={openForm}>
               Create post
             </button>
