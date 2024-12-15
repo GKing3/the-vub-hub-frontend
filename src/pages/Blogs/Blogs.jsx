@@ -57,7 +57,7 @@ const Blogs = () => {
                     <div className='blog-details'>
                       <div className='author-details'>
                         <div><img src={blog.profile_img}/></div>
-                        <p> <a href="">{blog.username}</a> </p>
+                        <p> <a href={() =>}>{blog.username}</a> </p>
                       </div>
                       <p> {blog.tags} </p>
                     </div>
