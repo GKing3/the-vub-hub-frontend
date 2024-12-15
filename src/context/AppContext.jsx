@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import axios from "axios";
 import { url } from "../Api";
 import { jwtDecode } from "jwt-decode";
@@ -11,8 +11,8 @@ export const AppContextProvider = (props) => {
     const [token, setToken] = useState(localStorage.getItem('authToken') || '');
     const [users, setUsers] = useState([]);
 
-    const fetchUserData = async() => {
-        if(!token) return;
+  const fetchUserData = async () => {
+    if (!token) return;
 
         try {
             const {data} = await axios.get(url + 'auth/login/status');
@@ -58,31 +58,29 @@ export const AppContextProvider = (props) => {
     //     }
     // }
 
-    const updateAvatar = (newAvatar) => {
-        setUserData((prev) => ({...prev, image: newAvatar}));
-    }
+  const updateAvatar = (newAvatar) => {
+    setUserData((prev) => ({ ...prev, image: newAvatar }));
+  };
 
-    const value = {
-        userData,
-        setUserData,
-        updateAvatar,
-        token,
-        setToken,
-        url
-    }
+  const value = {
+    userData,
+    setUserData,
+    updateAvatar,
+    token,
+    setToken,
+    url,
+  };
 
     useEffect(() => {
         fetchUserData();
         fetchDetails();
     }, [token]);
 
-    return (
-        <AppContext.Provider value={value}>
-            {props.children}
-        </AppContext.Provider>
-    );
-}
+  return (
+    <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
+  );
+};
 
 AppContextProvider.propTypes = {
-    children: PropTypes.node.isRequired,
-}
+  children: PropTypes.node.isRequired,
+};

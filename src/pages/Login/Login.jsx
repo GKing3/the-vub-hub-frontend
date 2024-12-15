@@ -1,8 +1,9 @@
 import "./Login.css";
 import { useContext, useState } from "react";
 import { Bounce, ToastContainer, toast } from "react-toastify";
-import 'react-toastify/ReactToastify.css';
+import "react-toastify/ReactToastify.css";
 // import { url } from "../../Api";
+axios.defaults.withCredentials = true;
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
@@ -10,9 +11,9 @@ import { AppContext } from "../../context/AppContext";
 axios.defaults.withCredentials = true;
 
 const initialState = {
-  email: '',
-  password: ''
-}
+  email: "",
+  password: "",
+};
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,36 +22,38 @@ const Login = () => {
   const [state, setState] = useState(initialState);
 
   const handleChange = (e) => {
-    setState({...state, [e.target.name]: e.target.value});
-  }
+    setState({ ...state, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(!state.email || !state.password) {
-      toast.error('Please fill out all fields');
+    if (!state.email || !state.password) {
+      toast.error("Please fill out all fields");
       return;
     }
 
     try {
-      const response = await axios.post(url + 'auth/login', state);
+      const response = await axios.post(url + "auth/login", state, {
+        withCredentials: true,
+      });
       // console.log(response);
       const data = await response.data;
-      if(data.token) {
-        localStorage.setItem('token', data.token);
+      if (data.token) {
+        localStorage.setItem("token", data.token);
         setToken(data.token);
-        toast.success('Logged in successfully!', {
+        toast.success("Logged in successfully!", {
           onClose: () => {
-            navigate('/');
-          }
-        })
+            navigate("/");
+          },
+        });
       } else {
-        toast.error('Failed to login. Please check your credentials!');
+        toast.error("Failed to login. Please check your credentials!");
       }
     } catch (error) {
       toast.error(error.message);
     }
-  }
+  };
 
   return (
     <div className="form-container">
@@ -62,21 +65,39 @@ const Login = () => {
 
         <div className="form-input">
           <p> Email address: </p>
-          <input type="email" name="email" onChange={handleChange} value={state.email} />
+          <input
+            type="email"
+            name="email"
+            onChange={handleChange}
+            value={state.email}
+          />
           <p> Password: </p>
-          <input type="password" name="password" onChange={handleChange} value={state.password} />
+          <input
+            type="password"
+            name="password"
+            onChange={handleChange}
+            value={state.password}
+          />
         </div>
 
-        <button className="submit" type="submit"> Login </button>
+        <button className="submit" type="submit">
+          {" "}
+          Login{" "}
+        </button>
 
         <div>
-            <p> New User?
-              <span className="form-guide" onClick={() => navigate('/register')}> Create an account </span>
-            </p>
+          <p>
+            {" "}
+            New User?
+            <span className="form-guide" onClick={() => navigate("/register")}>
+              {" "}
+              Create an account{" "}
+            </span>
+          </p>
         </div>
       </form>
 
-      <ToastContainer 
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
