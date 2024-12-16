@@ -16,6 +16,8 @@ import BlogDetails from "./pages/BlogDetails/BlogDetails";
 import News from "./pages/News/news";
 import ThreadPage from "./pages/Threads/Thread";
 import ThreadDetailPage from "./pages/ThreadDetails/ThreadDetails";
+import Search from "./pages/Search/Search";
+
 
 function App() {
   return (
@@ -26,7 +28,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-<<<<<<< HEAD
           <Route path="/my-profile" element={<MyProfile/>} />
           <Route path="/user/:userId" element={<MyProfile/>}/>
           <Route path="/my-blogs" element={<MyBlogs/>}></Route>
@@ -34,16 +35,10 @@ function App() {
           <Route path="/posts/" element={<Blogs/>}></Route>
           <Route path="/posts/:tag" element={<Blogs/>}/>
           <Route path="/posts/:postId" element={<BlogDetails/>}/>
-=======
-          <Route path="/my-profile" element={<MyProfile />} />
-          <Route path="/my-blogs" element={<MyBlogs />}></Route>
-          <Route path="/my-favourites" element={<MyFavourites />}></Route>
-          <Route path="/posts/" element={<Blogs />}></Route>
-          <Route path="/posts/:tag" element={<Blogs />} />
           <Route path="/blogs/:blogId" element={<BlogDetails />} />
->>>>>>> main
           <Route path="/news" element={<News />} />
           <Route path="/Threads" element={<ThreadPage />} />
+          <Route path="/search-results" element={<Search />} />
           <Route
             path="/threadDetail/:threadId"
             element={<ThreadDetailPage />}

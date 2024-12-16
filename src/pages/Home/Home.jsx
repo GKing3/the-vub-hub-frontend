@@ -11,9 +11,9 @@ import { useNavigate } from "react-router-dom";
 const Home = () => {
   
   const [blogs, setBlogs] = useState([]);
+  const [populairPosts, setPopulairPosts] = useState([]);
+
   const navigate = useNavigate();
-  // const [likesCount, setLikesCount] = useState(0);
-  // const [isLiked, setIsLiked] = useState(false);
 
   const formatDate = (isodate) => {
     const date = new Date(isodate);
@@ -26,26 +26,26 @@ const Home = () => {
 
   const handleBlogs = async () => {
     try {
-      const response = await axios.get(url + "api/post-with-locations");
-      console.log(response)
+      const response = await axios.get("http://localhost:8000/posts/post-with-locations");
       setBlogs(response.data);
     } catch (error) {
       console.error("Error fetching posts with locations:", error);
     }
   };
 
-  // const handleLikes = () => {
-  //   if(isLiked) {
-  //     setLikesCount(likesCount - 1);
-  //     setIsLiked(false);
-  //   } else {
-  //     setLikesCount(likesCount + 1);
-  //     setIsLiked(true);
-  //   }
-  // }
+  const handlePopularPosts = async () => {
+    try {
+        const response = await axios.get("http://localhost:8000/posts/popular-posts");
+        setPopulairPosts(response.data);
+    } catch (error) {
+        console.error("Error fetching popular posts:", error);
+    }
+};
+
 
   useEffect(() => {
     handleBlogs();
+    handlePopularPosts();
   }, []);
 
   return (
@@ -54,9 +54,9 @@ const Home = () => {
       <div className="popular-container mb-4">
         <h2 className="text-center mb-4">Popular Posts</h2>
         <div className="d-flex overflow-auto scroll">
-          {blogs.map((blog) => (
+          {populairPosts.map((blog) => (
             <div
-              className="card me-5 shadow-sm hover-card border"
+              className="card me-4 shadow-sm hover-card border"
               key={blog.id}
               style={{ minWidth: "300px", flex: "0 0 auto", overflow: "hidden" }}
             >
@@ -66,12 +66,13 @@ const Home = () => {
                 alt={`${blog.username}'s profile`}
                 className="rounded-circle me-2"
                 style={{ width: "30px", height: "30px", objectFit: "cover" }}
+                
               />
               <span className="text-secondary fw-bold mb-4">{blog.username}</span>
               <h5 className="card-title" style={{ color: "#2c3e50" }}>{blog.title}</h5>
               <p className="card-text">{blog.content}</p>
               <span className="d-block text-muted small mb-2">
-                {new Date(blog.created_at).toLocaleDateString()}
+                {formatDate(blog.created_at)}
               </span>
               <span className="badge" style={{ backgroundColor: "#34495e", color: "white" }}>
                 {blog.tags}
@@ -94,9 +95,9 @@ const Home = () => {
       <div className="latest-container mb-5">
         <h2 className="text-center mb-4">Latest Posts</h2>
         <div className="d-flex overflow-auto">
-          {blogs.map((blog) => (
+          {blogs.slice(0,10).map((blog) => (
             <div
-              className="card me-3 shadow-sm hover-card border"
+              className="card me-4 shadow-sm hover-card border"
               key={blog.id}
               style={{ minWidth: "300px", flex: "0 0 auto", overflow: "hidden" }}
             >
@@ -149,9 +150,9 @@ const Home = () => {
                 key={blog.id}
                 position={[blog.location.lat, blog.location.lng]}
                 icon={L.icon({
-                  iconUrl: blog.profile_img || "default-profile.png", // Zorg voor een fallback-image
-                  popupAnchor: [0, -40], // Popup net boven de marker
-                  className: "custom-marker", // Eventueel extra styling
+                  iconUrl: blog.profile_img || "default-profile.png", 
+                  popupAnchor: [0, -40], 
+                  className: "custom-marker", 
                 })}
               >
                 <Popup>
@@ -169,7 +170,7 @@ const Home = () => {
           maxHeight: "200px",
           objectFit: "cover",
           borderRadius: "8px",
-          marginTop: "10px", // Ruimte boven de afbeelding
+          marginTop: "10px", 
         }}
       />
     )}

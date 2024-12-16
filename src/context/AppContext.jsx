@@ -3,11 +3,13 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { url } from "../Api";
 import { jwtDecode } from "jwt-decode";
+axios.defaults.withCredentials = true;
 
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
-    const [userData, setUserData] = useState(() => sessionStorage.getItem('userData') || null);
+
+    const [userData, setUserData] = useState(() => JSON.parse(sessionStorage.getItem('userData')) || "");
     const [token, setToken] = useState('');
     const [users, setUsers] = useState([]);
 
@@ -18,7 +20,7 @@ export const AppContextProvider = (props) => {
             const {data} = await axios.get(url + 'auth/login/status');
             if(data.code == 200) {
                 setUserData(data.user);
-                sessionStorage.setItem('userData', data.user);
+                sessionStorage.setItem('userData', JSON.stringify(data.user));
             }
         } catch (error) {
             console.log(error);
@@ -67,6 +69,9 @@ export const AppContextProvider = (props) => {
         fetchDetails();
     }, [token]);
 
+    useEffect(() => {
+      console.log(userData);
+  }, [userData]);
 
   return (
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
