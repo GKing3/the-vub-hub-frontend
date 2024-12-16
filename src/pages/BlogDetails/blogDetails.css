@@ -129,15 +129,126 @@
 }
   
 /* User Info Section */
+.post-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
 .post-author {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  gap: 10px;
 }
+
+.author-profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.post-body {
+  display: flex;
+  gap: 20px;
+}
+
+.content-section {
+  flex: 2;
+}
+
+.image-section {
+  flex: 1;
+}
+
+.post-image {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.post-reactions {
+  display: flex;
+  gap: 10px;
+}
+
+.comments-section {
+  margin-top: 20px;
+}
+
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.author-profile-pic-comment {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.post-action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-button,
+.create-thread-button,
+.add-comment-button {
+  background-color: #ffd700;
+  color: #004080;
+  border: none;
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-comment-button {
+  margin-right: auto; /* Align to the left */
+}
+
+.post-action-buttons .delete-button {
+  margin-left: auto; /* Align delete/edit buttons to the right */
+}
+
+
 
 .author-profile-pic {
   width: 50px;
   height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.author-profile-pic-comment {
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   margin-right: 10px;
   object-fit: cover;
@@ -162,6 +273,17 @@
 
 .create-thread-button:hover {
   background-color: #e5c100;
+}
+
+.delete-button {
+  background-color: #ffd700;
+  color: #004080;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  float: right;
 }
 
 

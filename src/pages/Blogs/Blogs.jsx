@@ -1,36 +1,35 @@
-import axios from 'axios';
-import './Blogs.css';
-import { useContext, useState } from 'react';
-import { useEffect } from 'react';
-import { url } from '../../Api';
-import { Link, useLocation, useParams } from 'react-router-dom';
-import Pagination from '../../components/pagination/Pagination';
-import { AppContext } from '../../context/AppContext';
+import axios from "axios";
+import "./Blogs.css";
+import { useContext, useState } from "react";
+import { useEffect } from "react";
+import { url } from "../../Api";
+import { Link, useLocation, useParams } from "react-router-dom";
+import Pagination from "../../components/pagination/Pagination";
+import { AppContext } from "../../context/AppContext";
 
 const Blogs = () => {
   const { tag } = useParams();
-  console.log('test', tag);
+  console.log("test", tag);
   const [blogs, setBlogs] = useState([]);
   const location = useLocation();
-  const {userData} = useContext(AppContext)
+  const { userData } = useContext(AppContext);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [blogsPerPage, setBlogsPerPage] = useState(2);
   // const location = useLocation();
 
-
   const fetchBlogs = async (tag) => {
     try {
-      const link = tag ? url + `posts/tag/${tag}` : url + 'posts/';
-      console.log('Fetching link:', link);
+      const link = tag ? url + `posts/tag/${tag}` : url + "posts/";
+      console.log("Fetching link:", link);
       const response = await axios.get(link);
-      console.log('API Response:', response);
+      console.log("API Response:", response);
 
       setBlogs(response.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const lastBlogIndex = currentPage * blogsPerPage;
   const firstBlogIndex = lastBlogIndex - blogsPerPage;
@@ -38,7 +37,7 @@ const Blogs = () => {
 
   useEffect(() => {
     fetchBlogs(tag);
-  }, [tag, userData])
+  }, [tag, userData]);
 
   return (
     <div>
@@ -64,15 +63,24 @@ const Blogs = () => {
                      />
                         <p> <a href="">{blog.username}</a> </p>
                       </div>
-                      <p> {blog.tags} </p>
+                      <p>
+                        {" "}
+                        <a href="">{blog.username}</a>{" "}
+                      </p>
                     </div>
-                    <p> {blog.content} </p>
+                    <p> {blog.tags} </p>
                   </div>
+                  <p> {blog.content} </p>
                 </div>
-              ))
-            )
-          }
-          <Pagination totalBlogs={blogs.length} blogsPerPage={blogsPerPage} setCurrentPage={setCurrentPage} currentPage={currentPage}/>
+              </div>
+            ))
+          )}
+          <Pagination
+            totalBlogs={blogs.length}
+            blogsPerPage={blogsPerPage}
+            setCurrentPage={setCurrentPage}
+            currentPage={currentPage}
+          />
         </div>
         <div>
           <div className="tags">

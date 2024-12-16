@@ -10,14 +10,20 @@ const API_URL = "http://localhost:8000"; // Backend URL
 
 const ThreadDetailPage = () => {
   const { threadId } = useParams(); // Extract thread ID from URL
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [newPostTitle, setNewPostTitle] = useState("");
-  const [newPostContent, setNewPostContent] = useState("");
-  const [thread, setThread] = useState(null);
-  const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const { userData } = useContext(AppContext);
   const navigate = useNavigate();
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // post state
+  const [newPostTitle, setNewPostTitle] = useState("");
+  const [newPostContent, setNewPostContent] = useState("");
+  const [newImage, setNewImage] = useState("");
+  const [newTag, setNewTag] = useState("");
+  const [thread, setThread] = useState(null);
+
+  // Thread state
+  const [posts, setPosts] = useState([]);
 
   // Opens the form for creating a new thread
   const openForm = () => setIsFormOpen(true);
@@ -28,6 +34,7 @@ const ThreadDetailPage = () => {
     //setNewThreadTitle(""); // resetting form
   };
 
+  // Retrieving the posts for a thread
   useEffect(() => {
     const fetchThreadDetails = async () => {
       try {
@@ -58,34 +65,29 @@ const ThreadDetailPage = () => {
     try {
       const token = localStorage.getItem("token");
 
+      // This if test can be omitted because backend checks for authentication???
       if (!token) {
         alert("You must be logged in to create a thread.");
         return;
       }
 
-      const payloadBase64 = token.split(".")[1]; // Get the payload part of the JWT
-      const payload = JSON.parse(atob(payloadBase64)); // Decode the Base64 payload
-      const userId = payload.id; // Extract the user ID (or any other data)
-      console.log("User ID:", userId);
+      const response = await axios.post(API_URL + "/posts/", {
+        title: newPostTitle,
+        content: newPostContent,
+        image: newImage,
+        tags: newTag,
+        reading_time: null, // Is this necessary????
+        threadId: threadId,
+      });
 
-      const response = await axios.post(
-        API_URL + "/posts/",
-        {
-          title: newPostTitle,
-          content: newPostContent,
-          image: null,
-          tags: null,
-          reading_time: null,
-          threadId: threadId,
-        }
-        //{ headers: { Authorization: `Bearer ${token}` } }
-      );
-
+      // Status of 201 indicates succession
       if (response.status === 201) {
-        const { postId, title, content, idThread, authorId } = response.data;
+        // Destructuring the response into variables
+        const { postId, title, content, image, tags, authorId, threadId } =
+          response.data;
         setPosts([
           ...posts,
-          { id: postId, title, content, idThread, authorId },
+          { id: postId, title, content, image, tags, authorId, threadId },
         ]);
         closeForm(); // close form after creating thread
       }
@@ -133,6 +135,12 @@ const ThreadDetailPage = () => {
             <ul className="posts-list">
               {posts.map((post) => (
                 <li key={post.id} className="post-item">
+                  <img
+                    className="author-profile-pic"
+                    src={userData.image_profile_url}
+                    alt={`${userData.name}'s profile`}
+                  />
+                  <span className="author-name">{userData.name}</span>
                   <h2 className="post-title">{post.title}</h2>
                   <p className="post-content">
                     {post.content.length > 100
@@ -160,14 +168,24 @@ const ThreadDetailPage = () => {
                 placeholder="Post title"
                 value={newPostTitle}
                 onChange={(e) => setNewPostTitle(e.target.value)}
-                required
               />
-              <input
-                type="text"
+              <textarea
                 placeholder="Post content"
                 value={newPostContent}
                 onChange={(e) => setNewPostContent(e.target.value)}
-                required
+                required // Backend requires content
+              />
+              <input
+                type="text"
+                placeholder="tag"
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="image URL"
+                value={newImage}
+                onChange={(e) => setNewImage(e.target.value)}
               />
               <div className="modal-actions">
                 <button type="submit">Create</button>

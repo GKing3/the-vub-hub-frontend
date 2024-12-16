@@ -42,6 +42,11 @@ const MyBlogs = () => {
         <ul className="posts-list">
           {posts.map((post) => (
             <li key={post.id} className="post-item">
+              <img
+                className="author-profile-pic"
+                src={userData.image_profile_url}
+                alt={`${userData.name}'s profile`}
+              />
               <h2 className="post-title">{post.title}</h2>
               <p className="post-content">
                 {post.content.length > 100

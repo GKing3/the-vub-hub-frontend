@@ -1,5 +1,5 @@
 import "./navBar.css";
-import {  useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import avatar_icon from "../../assets/avatar.png";
 import { AppContext } from "../../context/AppContext";
@@ -47,10 +47,9 @@ const NavBar = () => {
         navigate("/");
     
     } catch (err) {
-        toast.error('An error occurred while logging out.');
+      toast.error("An error occurred while logging out.");
     }
-};
-
+  };
 
   return (
     <body>
@@ -111,7 +110,9 @@ const NavBar = () => {
                     <ul className="custom-dropdown">
                       <li onClick={() => navigate("my-profile")}>Profile</li>
                       <li onClick={() => navigate("my-blogs")}>My Blogs</li>
-                      <li onClick={() => navigate("my-favourites")}>My Favourites</li>
+                      <li onClick={() => navigate("my-favourites")}>
+                        My Favourites
+                      </li>
                       <li onClick={handleLogout}>Logout</li>
                     </ul>
                   )}
