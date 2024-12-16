@@ -35,8 +35,8 @@ const BlogDetails = () => {
   useEffect(() => {
     const fetchPostDetails = async () => {
       try {
-        const postResponse = await axios.get(`${API_URL}/posts/${blogId}`);
         console.log(userData.id);
+        const postResponse = await axios.get(`${API_URL}/posts/postId/${blogId}`);
         setPost(postResponse.data);
         const commentsResponse = await axios.get(
           `${API_URL}/comments/${blogId}`

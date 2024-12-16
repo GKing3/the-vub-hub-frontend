@@ -3,29 +3,30 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { url } from "../Api";
 import { jwtDecode } from "jwt-decode";
+axios.defaults.withCredentials = true;
 
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
-  const [userData, setUserData] = useState(
-    () => JSON.parse(sessionStorage.getItem("userData")) || ""
-  );
-  const [token, setToken] = useState("");
-  const [users, setUsers] = useState([]);
+
+    const [userData, setUserData] = useState(() => JSON.parse(sessionStorage.getItem('userData')) || "");
+    const [token, setToken] = useState('');
+    const [users, setUsers] = useState([]);
 
   const fetchUserData = async () => {
     if (!token) return;
 
-    try {
-      const { data } = await axios.get(url + "auth/login/status");
-      if (data.code == 200) {
-        setUserData(data.user);
-        sessionStorage.setItem("userData", JSON.stringify(data.user));
-      }
-    } catch (error) {
-      console.log(error);
+        try {
+            const {data} = await axios.get(url + 'auth/login/status');
+            if(data.code == 200) {
+                setUserData(data.user);
+                sessionStorage.setItem('userData', JSON.stringify(data.user));
+            }
+        } catch (error) {
+            console.log(error);
+        }
+      
     }
-  };
 
   const fetchDetails = async () => {
     if (!token) return;
@@ -69,6 +70,10 @@ export const AppContextProvider = (props) => {
     fetchUserData();
     fetchDetails();
   }, [token]);
+
+    useEffect(() => {
+      console.log(userData);
+  }, [userData]);
 
   return (
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>

@@ -10,49 +10,42 @@ import axios from "axios";
 const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userData, token, setToken, url } = useContext(AppContext);
+  const {userData,setUserData, token, setToken, url} = useContext(AppContext);
   const [blogs, setBlogs] = useState([]);
   const [search, setSearch] = useState("");
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
+
   const handleSearch = async (e) => {
-    if (e.key === "Enter") {
-      const query = e.target.value;
-      if (!query) return;
-
-      // if(location.pathname === '/posts/') {
-      //   const newSearch = `?tag=${query}`;
-      //   if(location.search !== newSearch) {
-      //     navigate({ pathname: location.pathname, search: newSearch });
-      //   }
-      // } else {
-      //   navigate(`/posts/?tag=${query}`);
-      // }
-
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const zoek = e.target.value;
+      if (!zoek) return;
       try {
-        const response = await axios.get(url + `posts/tag/${query}`);
-        // console.log(response.data);
-        setBlogs(response.data);
-
-        if (location.pathname !== "posts/") {
-          navigate("posts/", { state: { blogs: response.data } });
+        const response = await axios.get('http://localhost:8000/search',{params: {
+          query: zoek
         }
+        });
+        const { users, threads, posts } = response.data.results;
+        navigate("/search-results", { state: { users, threads, posts } });
       } catch (error) {
-        console.log(error);
+        console.error("Search failed:", error);
+        toast.error("An error occurred during the search.");
       }
     }
   };
 
+
+
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:8000/auth/logout");
-      setToken(false);
-      sessionStorage.removeItem("userData");
-      toast.success("Logged out successfully!", {
-        onClose: () => {
-          navigate("/");
-        },
-      });
+        const res = await axios.post('http://localhost:8000/auth/logout'); 
+        setDropdownOpen(false);
+        setToken(false);
+        sessionStorage.removeItem('userData');
+        setUserData(false);
+        navigate("/");
+    
     } catch (err) {
       toast.error("An error occurred while logging out.");
     }
@@ -98,7 +91,7 @@ const NavBar = () => {
               <input
                 className="form-control me-2"
                 type="search"
-                placeholder="Search for blogs"
+                placeholder="Search"
                 onKeyDown={handleSearch}
               />
             </form>

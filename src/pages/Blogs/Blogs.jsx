@@ -44,21 +44,24 @@ const Blogs = () => {
       <h2 className="page-title"> Blogs: {tag || "All"} </h2>
       <div className="blogs-container">
         <div>
-          {blogs.length === 0 ? (
-            <p> No blogs found for this tag. </p>
-          ) : (
-            currentBlogs.map((blog) => (
-              <div key={blog.id} className="blog-wrapper">
-                <div>
-                  {" "}
-                  <img src={blog.image_url} />{" "}
-                </div>
-                <div>
-                  <h2> {blog.title} </h2>
-                  <div className="blog-details">
-                    <div className="author-details">
-                      <div>
-                        <img src={blog.profile_img} />
+          {
+            blogs.length === 0 ? (
+              <p> No blogs found for this tag. </p>
+            ) : (
+              currentBlogs.map((blog) => (
+                <div key={blog.id} className='blog-wrapper'>
+                  <div> <img src={blog.image_url}/> </div>
+                  <div>
+                    <h2> {blog.title} </h2>
+                    <div className='blog-details'>
+                      <div className='author-details'>
+                      <img
+                    src={blog.profile_img}
+                   alt={`${blog.username}'s profile`}
+                    className="rounded-circle me-2"
+                    style={{ width: "30px", height: "30px", objectFit: "cover" }}
+                     />
+                        <p> <a href="">{blog.username}</a> </p>
                       </div>
                       <p>
                         {" "}

@@ -53,6 +53,7 @@ const NewsTab = () => {
   };
 
   const handleAddComment = async (articleId) => {
+    console.log(userData);
     if (!userData || !userData.id) {
       alert("You need to be logged in to add a comment.");
       return;
