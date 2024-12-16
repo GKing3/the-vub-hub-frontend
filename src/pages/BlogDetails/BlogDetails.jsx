@@ -15,15 +15,18 @@ const BlogDetails = () => {
   const navigate = useNavigate();
 
   // State initialization
-  const [post, setPost] = useState([[]]);
+  const [post, setPost] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
   const [loading, setLoading] = useState(true); // tracks wether data is still being fetched
   const [error, setError] = useState(null); // Holds any error messages if the data fetching fails.
+
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
+  const [newImage, setNewImage] = useState("");
+  const [newTag, setNewTag] = useState("");
   const [editingPost, setEditingPost] = useState(null);
   const [editFlag, setEditFlag] = useState(false);
 
@@ -33,7 +36,7 @@ const BlogDetails = () => {
     const fetchPostDetails = async () => {
       try {
         const postResponse = await axios.get(`${API_URL}/posts/${blogId}`);
-        console.log(postResponse);
+        console.log(userData.id);
         setPost(postResponse.data);
         const commentsResponse = await axios.get(
           `${API_URL}/comments/${blogId}`
@@ -165,6 +168,8 @@ const BlogDetails = () => {
       const response = await axios.put(`${API_URL}/posts/${blogId}`, {
         title: newTitle,
         content: newContent,
+        image_url: newImage,
+        tags: newTag,
       });
       if (response.status === 200) {
         // Close mform and change editFlag to refresh post so that it shows the change
@@ -203,23 +208,17 @@ const BlogDetails = () => {
     <div className="post-detail-container">
       {post && (
         <div className="post-detail">
-          {/* edit button */}
-          {post.authorId === userData.id && (
-            <div>
-              <button
-                className="create-thread-button"
-                onClick={() => setEditingPost(post.id)}
-              >
-                Edit
-              </button>
-              <button
-                className="create-thread-button"
-                onClick={() => handleDeletePost(post.id)}
-              >
-                Delete
-              </button>
+          {/* post header */}
+          <div className="post-header">
+            <div className="post-author">
+              <img
+                className="author-profile-pic"
+                src={userData.image_profile_url}
+                alt={`${userData.name}'s profile`}
+              />
+              <span className="author-name">{userData.name}</span>
             </div>
-          )}
+          </div>
 
           {editingPost && (
             <div className="edit-post-modal">
@@ -235,37 +234,62 @@ const BlogDetails = () => {
                   onChange={(e) => setNewContent(e.target.value)}
                   placeholder="Edit content"
                 ></textarea>
+                <input
+                  type="text"
+                  placeholder="tag"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="image URL"
+                  value={newImage}
+                  onChange={(e) => setNewImage(e.target.value)}
+                />
                 <button type="submit">Save Changes</button>
                 <button onClick={() => setEditingPost(null)}>Cancel</button>
               </form>
             </div>
           )}
 
-          {/* user info */}
-          <div className="post-author">
-            <img
-              className="author-profile-pic"
-              src={userData.image_profile_url}
-              alt={`${userData.name}'s profile`}
-            />
-            <span className="author-name">{userData.name}</span>
+          {/* Post Body */}
+          <div className="post-body">
+            {/* Post Content and Image */}
+            <div className="content-section">
+              {/* Post Title */}
+              <h1 className="post-title">{post.title}</h1>
+              {/* post tag */}
+              <span
+                className="badge"
+                style={{ backgroundColor: "#34495e", color: "white" }}
+              >
+                {post.tags}
+              </span>
+              {/* Post Content */}
+              <p className="post-content">{post.content}</p>
+            </div>
+            <div className="image-section">
+              <img
+                className="post-image"
+                src={post.image_url}
+                alt="Post image"
+              />
+            </div>
           </div>
-          {/* Post Title */}
-          <h1 className="post-title">{post.title}</h1>
-          {/* Post Content */}
-          <p className="post-content">{post.content}</p>
-          {/* Post Date */}
-          <span className="post-date">
-            Posted on: {new Date(post.created_at).toLocaleDateString()}
-          </span>
-          {/* Like/Dislike Buttons */}
-          <div className="post-reactions">
-            <button className="like-button" onClick={handleLike}>
-              👍 {likes}
-            </button>
-            <button className="dislike-button" onClick={handleDislike}>
-              👎 {dislikes}
-            </button>
+
+          {/* Post footer */}
+          <div className="post-footer">
+            <span className="post-date">
+              Posted on: {new Date(post.created_at).toLocaleDateString()}
+            </span>
+            <div className="post-reactions">
+              <button className="like-button" onClick={handleLike}>
+                👍 {likes}
+              </button>
+              <button className="dislike-button" onClick={handleDislike}>
+                👎 {dislikes}
+              </button>
+            </div>
           </div>
 
           {/* Comments Section */}
@@ -275,13 +299,21 @@ const BlogDetails = () => {
               <ul className="comments-list">
                 {comments.map((comment, idx) => (
                   <li key={idx} className="comment-item">
+                    <img
+                      className="author-profile-pic-comment"
+                      src={userData.image_profile_url}
+                      alt={`${userData.name}'s profile`}
+                    />
+                    <span className="author-name">{userData.name}</span>
                     <p className="comment-content">{comment.content}</p>
-                    <button
-                      className="delete-comment-button"
-                      onClick={() => handleRemoveComment(comment.commentId)}
-                    >
-                      Delete
-                    </button>
+                    {post.authorId === userData.id && (
+                      <button
+                        className="delete-comment-button"
+                        onClick={() => handleRemoveComment(comment.commentId)}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -301,6 +333,23 @@ const BlogDetails = () => {
               <button className="add-comment-button" onClick={handleAddComment}>
                 Add Comment
               </button>
+              {/* edit and delete button */}
+              {post.authorId === userData.id && (
+                <div>
+                  <button
+                    className="delete-button"
+                    onClick={() => setEditingPost(post.id)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="create-thread-button"
+                    onClick={() => handleDeletePost(post.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

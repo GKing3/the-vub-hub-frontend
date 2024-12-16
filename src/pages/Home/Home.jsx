@@ -4,12 +4,12 @@ import axios from "axios";
 import { url } from "../../Api";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
+import { Link } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  
   const [blogs, setBlogs] = useState([]);
   const navigate = useNavigate();
   // const [likesCount, setLikesCount] = useState(0);
@@ -17,17 +17,17 @@ const Home = () => {
 
   const formatDate = (isodate) => {
     const date = new Date(isodate);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
-  }
+  };
 
   const handleBlogs = async () => {
     try {
       const response = await axios.get(url + "api/post-with-locations");
-      console.log(response)
+      console.log(response);
       setBlogs(response.data);
     } catch (error) {
       console.error("Error fetching posts with locations:", error);
@@ -58,29 +58,43 @@ const Home = () => {
             <div
               className="card me-5 shadow-sm hover-card border"
               key={blog.id}
-              style={{ minWidth: "300px", flex: "0 0 auto", overflow: "hidden" }}
+              style={{
+                minWidth: "300px",
+                flex: "0 0 auto",
+                overflow: "hidden",
+              }}
             >
               <div className="card-body">
-              <img
-                src={blog.profile_img}
-                alt={`${blog.username}'s profile`}
-                className="rounded-circle me-2"
-                style={{ width: "30px", height: "30px", objectFit: "cover" }}
-              />
-              <span className="text-secondary fw-bold mb-4">{blog.username}</span>
-              <h5 className="card-title" style={{ color: "#2c3e50" }}>{blog.title}</h5>
-              <p className="card-text">{blog.content}</p>
-              <span className="d-block text-muted small mb-2">
-                {new Date(blog.created_at).toLocaleDateString()}
-              </span>
-              <span className="badge" style={{ backgroundColor: "#34495e", color: "white" }}>
-                {blog.tags}
-              </span>
+                <img
+                  src={blog.profile_img}
+                  alt={`${blog.username}'s profile`}
+                  className="rounded-circle me-2"
+                  style={{ width: "30px", height: "30px", objectFit: "cover" }}
+                />
+                <span className="text-secondary fw-bold mb-4">
+                  {blog.username}
+                </span>
+                <h5 className="card-title" style={{ color: "#2c3e50" }}>
+                  {blog.title}
+                </h5>
+                <p className="card-text">{blog.content}</p>
+                <Link to={`/blogs/${blog.id}`} className="read-more">
+                  View post
+                </Link>
+                <span className="d-block text-muted small mb-2">
+                  {new Date(blog.created_at).toLocaleDateString()}
+                </span>
+                <span
+                  className="badge"
+                  style={{ backgroundColor: "#34495e", color: "white" }}
+                >
+                  {blog.tags}
+                </span>
               </div>
               {blog.image_url && (
                 <img
                   src={blog.image_url}
-                  alt={blog.title }
+                  alt={blog.title}
                   className="card-img-bottom"
                   style={{ height: "200px", objectFit: "cover", width: "100%" }}
                 />
@@ -98,22 +112,31 @@ const Home = () => {
             <div
               className="card me-3 shadow-sm hover-card border"
               key={blog.id}
-              style={{ minWidth: "300px", flex: "0 0 auto", overflow: "hidden" }}
+              style={{
+                minWidth: "300px",
+                flex: "0 0 auto",
+                overflow: "hidden",
+              }}
             >
               <div className="card-body">
-              <img
-                src={blog.profile_img}
-                alt={`${blog.username}'s profile`}
-                className="rounded-circle me-2"
-                style={{ width: "30px", height: "30px", objectFit: "cover" }}
-              />
-              <span className="text-secondary fw-bold">{blog.username}</span>
-                <h5 className="card-title" style={{ color: "#2c3e50" }}>{blog.title}</h5>
+                <img
+                  src={blog.profile_img}
+                  alt={`${blog.username}'s profile`}
+                  className="rounded-circle me-2"
+                  style={{ width: "30px", height: "30px", objectFit: "cover" }}
+                />
+                <span className="text-secondary fw-bold">{blog.username}</span>
+                <h5 className="card-title" style={{ color: "#2c3e50" }}>
+                  {blog.title}
+                </h5>
                 <p className="card-text">{blog.content}</p>
                 <span className="d-block text-muted small mb-2">
                   {new Date(blog.created_at).toLocaleDateString()}
                 </span>
-                <span className="badge" style={{ backgroundColor: "#34495e", color: "white" }}>
+                <span
+                  className="badge"
+                  style={{ backgroundColor: "#34495e", color: "white" }}
+                >
                   {blog.tags}
                 </span>
               </div>
@@ -130,8 +153,8 @@ const Home = () => {
         </div>
       </div>
 
-     {/* Map Section */}
-     <div className="map-container mb-5">
+      {/* Map Section */}
+      <div className="map-container mb-5">
         <h2 className="text-center mb-4">Explore the Map</h2>
         <MapContainer
           center={[50.8503, 4.3517]}
@@ -155,58 +178,73 @@ const Home = () => {
                 })}
               >
                 <Popup>
-  <div style={{ textAlign: "center" }}>
-    <strong style={{ fontSize: "16px", display: "block", marginBottom: "10px" }}>
-      {blog.title}
-    </strong>
-    {blog.content && <p style={{ fontSize: "14px", lineHeight: "1.5" }}>{blog.content}</p>}
-    {blog.image_url && (
-      <img
-        src={blog.image_url}
-        alt={blog.title}
-        style={{
-          width: "100%",
-          maxHeight: "200px",
-          objectFit: "cover",
-          borderRadius: "8px",
-          marginTop: "10px", // Ruimte boven de afbeelding
-        }}
-      />
-    )}
-    <em style={{ fontSize: "12px", color: "#555", display: "block", marginTop: "10px" }}>
-      - {blog.username}
-    </em>
-  </div>
-</Popup>
+                  <div style={{ textAlign: "center" }}>
+                    <strong
+                      style={{
+                        fontSize: "16px",
+                        display: "block",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      {blog.title}
+                    </strong>
+                    {blog.content && (
+                      <p style={{ fontSize: "14px", lineHeight: "1.5" }}>
+                        {blog.content}
+                      </p>
+                    )}
+                    {blog.image_url && (
+                      <img
+                        src={blog.image_url}
+                        alt={blog.title}
+                        style={{
+                          width: "100%",
+                          maxHeight: "200px",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                          marginTop: "10px", // Ruimte boven de afbeelding
+                        }}
+                      />
+                    )}
+                    <em
+                      style={{
+                        fontSize: "12px",
+                        color: "#555",
+                        display: "block",
+                        marginTop: "10px",
+                      }}
+                    >
+                      - {blog.username}
+                    </em>
+                  </div>
+                </Popup>
+              </Marker>
+            ) : null
+          )}
+        </MapContainer>
+      </div>
 
-            </Marker>
-                ) : null
-                  )}
-          </MapContainer>
-          </div>
-  
-
-    <div className="hero-section text-center py-5 bg-light">
-    <div className="hero-description">
-      <h2> Discover, Share and Connect </h2>
-      <p>
-        Join a community of VUB students that value your input and are
-        passionate about sharing knowledge, experiences and campus updates.
-        <br />
-        Start exploring or add your voice to the conversation.
-      </p>
+      <div className="hero-section text-center py-5 bg-light">
+        <div className="hero-description">
+          <h2> Discover, Share and Connect </h2>
+          <p>
+            Join a community of VUB students that value your input and are
+            passionate about sharing knowledge, experiences and campus updates.
+            <br />
+            Start exploring or add your voice to the conversation.
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            navigate("/posts/");
+            scrollTo(0, 0);
+          }}
+          className="btn btn-primary mt-3"
+        >
+          Explore Now
+        </button>
+      </div>
     </div>
-    <button
-      onClick={() => {
-        navigate("/posts/");
-        scrollTo(0, 0);
-      }}
-      className="btn btn-primary mt-3"
-    >
-      Explore Now
-    </button>
-  </div>
-  </div>
   );
 };
 
