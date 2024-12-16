@@ -7,51 +7,54 @@ import { jwtDecode } from "jwt-decode";
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
-    const [userData, setUserData] = useState(() => sessionStorage.getItem('userData') || null);
-    const [token, setToken] = useState('');
-    const [users, setUsers] = useState([]);
+  const [userData, setUserData] = useState(
+    () => JSON.parse(sessionStorage.getItem("userData")) || ""
+  );
+  const [token, setToken] = useState("");
+  const [users, setUsers] = useState([]);
 
   const fetchUserData = async () => {
     if (!token) return;
 
-        try {
-            const {data} = await axios.get(url + 'auth/login/status');
-            if(data.code == 200) {
-                setUserData(data.user);
-                sessionStorage.setItem('userData', data.user);
-            }
-        } catch (error) {
-            console.log(error);
-        }
-      
+    try {
+      const { data } = await axios.get(url + "auth/login/status");
+      if (data.code == 200) {
+        setUserData(data.user);
+        sessionStorage.setItem("userData", JSON.stringify(data.user));
+      }
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    const fetchDetails = async () => {
-        if(!token) return;
+  const fetchDetails = async () => {
+    if (!token) return;
 
-        try {
-            const decodeToken = jwtDecode(token);
-            const userId = decodeToken.id;
+    try {
+      const decodeToken = jwtDecode(token);
+      const userId = decodeToken.id;
 
-            const {data} = await axios.get(url + `user/${userId}`);
-            if(data.id) {
-                setUsers({
-                    id: data.id,
-                    email: data.email,
-                    name: data.name,
-                    image_profile_url: data.image_profile_url
-                })
-            }
-        } catch (error) {
-            console.log(error);
-        }
+      const { data } = await axios.get(url + `user/${userId}`);
+      if (data.id) {
+        setUsers({
+          id: data.id,
+          email: data.email,
+          name: data.name,
+          image_profile_url: data.image_profile_url,
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
-
-
+  };
 
   const updateAvatar = (newAvatar) => {
     setUserData((prev) => ({ ...prev, image: newAvatar }));
   };
+
+  useEffect(() => {
+    console.log(userData);
+  }, [userData]);
 
   const value = {
     userData,
@@ -62,11 +65,10 @@ export const AppContextProvider = (props) => {
     url,
   };
 
-    useEffect(() => {
-        fetchUserData();
-        fetchDetails();
-    }, [token]);
-
+  useEffect(() => {
+    fetchUserData();
+    fetchDetails();
+  }, [token]);
 
   return (
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>

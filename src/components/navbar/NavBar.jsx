@@ -1,5 +1,5 @@
 import "./navBar.css";
-import {  useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import avatar_icon from "../../assets/avatar.png";
 import { AppContext } from "../../context/AppContext";
@@ -10,16 +10,15 @@ import axios from "axios";
 const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-;
-  const {userData, token, setToken, url} = useContext(AppContext);
+  const { userData, token, setToken, url } = useContext(AppContext);
   const [blogs, setBlogs] = useState([]);
   const [search, setSearch] = useState("");
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const handleSearch = async (e) => {
-    if(e.key === 'Enter') {
+    if (e.key === "Enter") {
       const query = e.target.value;
-      if(!query) return;
+      if (!query) return;
 
       // if(location.pathname === '/posts/') {
       //   const newSearch = `?tag=${query}`;
@@ -35,8 +34,8 @@ const NavBar = () => {
         // console.log(response.data);
         setBlogs(response.data);
 
-        if(location.pathname !== 'posts/') {
-          navigate('posts/', {state: { blogs: response.data }});
+        if (location.pathname !== "posts/") {
+          navigate("posts/", { state: { blogs: response.data } });
         }
       } catch (error) {
         console.log(error);
@@ -44,22 +43,20 @@ const NavBar = () => {
     }
   };
 
-
   const handleLogout = async () => {
     try {
-        await axios.post('http://localhost:8000/auth/logout'); 
-        setToken(false);
-        sessionStorage.removeItem('userData');
-        toast.success('Logged out successfully!', {
-          onClose: () => {
-            navigate("/");
-          },
-        });
+      await axios.post("http://localhost:8000/auth/logout");
+      setToken(false);
+      sessionStorage.removeItem("userData");
+      toast.success("Logged out successfully!", {
+        onClose: () => {
+          navigate("/");
+        },
+      });
     } catch (err) {
-        toast.error('An error occurred while logging out.');
+      toast.error("An error occurred while logging out.");
     }
-};
-
+  };
 
   return (
     <body>
@@ -120,7 +117,9 @@ const NavBar = () => {
                     <ul className="custom-dropdown">
                       <li onClick={() => navigate("my-profile")}>Profile</li>
                       <li onClick={() => navigate("my-blogs")}>My Blogs</li>
-                      <li onClick={() => navigate("my-favourites")}>My Favourites</li>
+                      <li onClick={() => navigate("my-favourites")}>
+                        My Favourites
+                      </li>
                       <li onClick={handleLogout}>Logout</li>
                     </ul>
                   )}
