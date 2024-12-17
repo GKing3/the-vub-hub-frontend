@@ -12,9 +12,9 @@ import { AppContext } from "../../context/AppContext";
 const Home = () => {
   const {url} = useContext(AppContext);
   const [blogs, setBlogs] = useState([]);
+  const [populairPosts, setPopulairPosts] = useState([]);
+
   const navigate = useNavigate();
-  // const [likesCount, setLikesCount] = useState(0);
-  // const [isLiked, setIsLiked] = useState(false);
 
   const formatDate = (isodate) => {
     const date = new Date(isodate);
@@ -35,18 +35,19 @@ const Home = () => {
     }
   };
 
-  // const handleLikes = () => {
-  //   if(isLiked) {
-  //     setLikesCount(likesCount - 1);
-  //     setIsLiked(false);
-  //   } else {
-  //     setLikesCount(likesCount + 1);
-  //     setIsLiked(true);
-  //   }
-  // }
+  const handlePopularPosts = async () => {
+    try {
+        const response = await axios.get("http://localhost:8000/posts/popular-posts");
+        setPopulairPosts(response.data);
+    } catch (error) {
+        console.error("Error fetching popular posts:", error);
+    }
+};
+
 
   useEffect(() => {
     handleBlogs();
+    handlePopularPosts();
   }, []);
 
   return (
@@ -55,9 +56,9 @@ const Home = () => {
       <div className="popular-container mb-4">
         <h2 className="text-center mb-4">Popular Posts</h2>
         <div className="d-flex overflow-auto scroll">
-          {blogs.map((blog) => (
+          {populairPosts.map((blog) => (
             <div
-              className="card me-5 shadow-sm hover-card border"
+              className="card me-4 shadow-sm hover-card border"
               key={blog.id}
               style={{
                 minWidth: "300px",
@@ -109,9 +110,9 @@ const Home = () => {
       <div className="latest-container mb-5">
         <h2 className="text-center mb-4">Latest Posts</h2>
         <div className="d-flex overflow-auto">
-          {blogs.map((blog) => (
+          {blogs.slice(0,10).map((blog) => (
             <div
-              className="card me-3 shadow-sm hover-card border"
+              className="card me-4 shadow-sm hover-card border"
               key={blog.id}
               style={{
                 minWidth: "300px",
@@ -173,9 +174,9 @@ const Home = () => {
                 key={blog.id}
                 position={[blog.location.lat, blog.location.lng]}
                 icon={L.icon({
-                  iconUrl: blog.profile_img || "default-profile.png", // Zorg voor een fallback-image
-                  popupAnchor: [0, -40], // Popup net boven de marker
-                  className: "custom-marker", // Eventueel extra styling
+                  iconUrl: blog.profile_img || "default-profile.png", 
+                  popupAnchor: [0, -40], 
+                  className: "custom-marker", 
                 })}
               >
                 <Popup>

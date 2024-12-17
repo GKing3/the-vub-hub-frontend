@@ -7,7 +7,6 @@ axios.defaults.withCredentials = true;
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 
-axios.defaults.withCredentials = true;
 
 const initialState = {
   email: "",
