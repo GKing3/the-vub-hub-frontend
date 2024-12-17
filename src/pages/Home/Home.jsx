@@ -7,12 +7,21 @@ import { Link, useParams } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
+import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+import "leaflet-routing-machine";
+
+
+
 import { AppContext } from "../../context/AppContext";
 
 const Home = () => {
   const {url} = useContext(AppContext);
   const [blogs, setBlogs] = useState([]);
   const [populairPosts, setPopulairPosts] = useState([]);
+  const [routing, setRouting] = useState(null);
+  const [map, setMap] = useState(null);
+  const [startAddress, setStartAddress] = useState("");
+
 
   const navigate = useNavigate();
 
@@ -52,13 +61,49 @@ const Home = () => {
     handlePopularPosts();
   }, []);
 
+  useEffect(() => {
+    if (map) {
+      const control = L.Routing.control({}).addTo(map);
+      setRouting(control);
+
+      }
+  }, [map]);
+
+
+
+  const geocodeAddress = async (address, blog) => {
+    const apiKey = 'ad02d4071783442e8bde106c21af1d9c';
+    const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}`;
+  
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+  
+      if (data.results && data.results.length > 0) {
+        const { lat, lng } = data.results[0].geometry;
+        routing.setWaypoints([
+          L.latLng(lat, lng),
+          L.latLng(blog.location.lat, blog.location.lng),
+        ])
+      } else {
+        alert("Adres niet gevonden. Probeer een ander adres.");
+      }
+    } catch (error) {
+      console.error("Error tijdens geocoding:", error);
+      alert("Er ging iets mis met het vinden van het adres.");
+    }
+  };
+  
+
+
+
   return (
     <div className="container py-5">
       {/* Popular Posts Section */}
       <div className="popular-container mb-4">
         <h2 className="text-center mb-4">Popular Posts</h2>
         <div className="d-flex overflow-auto scroll">
-          {populairPosts.map((blog) => (
+          {populairPosts.slice(0,10).map((blog) => (
             <div
               className="card me-4 shadow-sm hover-card border"
               key={blog.id}
@@ -165,9 +210,10 @@ const Home = () => {
         <h2 className="text-center mb-4">Explore the Map</h2>
         <MapContainer
           center={[50.8503, 4.3517]}
-          zoom={13}
+          zoom={15}
           style={{ height: "500px", borderRadius: "8px" }}
           scrollWheelZoom={false}
+          ref={setMap}
         >
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -179,7 +225,7 @@ const Home = () => {
                 key={blog.id}
                 position={[blog.location.lat, blog.location.lng]}
                 icon={L.icon({
-                  iconUrl: blog.profile_img || "default-profile.png",
+                  iconUrl: blog.profile_img,
                   popupAnchor: [0, -40],
                   className: "custom-marker",
                 })}
@@ -196,33 +242,23 @@ const Home = () => {
                       {blog.title}
                     </strong>
                     {blog.content && (
-                      <p style={{ fontSize: "14px", lineHeight: "1.5" }}>
-                        {blog.content}
-                      </p>
+                      <p style={{ fontSize: "14px", lineHeight: "1.5" }}>{blog.content}</p>
                     )}
-                    {blog.image_url && (
-                      <img
-                        src={blog.image_url}
-                        alt={blog.title}
-                        style={{
-                          width: "100%",
-                          maxHeight: "200px",
-                          objectFit: "cover",
-                          borderRadius: "8px",
-                          marginTop: "10px", // Ruimte boven de afbeelding
-                        }}
-                      />
-                    )}
-                    <em
-                      style={{
-                        fontSize: "12px",
-                        color: "#555",
-                        display: "block",
-                        marginTop: "10px",
-                      }}
+                              <div className="input-group mb-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter start address"
+            value={startAddress}
+            onChange={(e) => setStartAddress(e.target.value)}
+          />
+           </div>
+                    <button
+                      className="btn btn-sm btn-primary mt-2"
+                      onClick={() => geocodeAddress(startAddress,blog)}
                     >
-                      - {blog.username}
-                    </em>
+                      Go There
+                    </button>
                   </div>
                 </Popup>
               </Marker>
@@ -243,7 +279,7 @@ const Home = () => {
         </div>
         <button
           onClick={() => {
-            navigate("/posts/");
+            navigate("/followedPosts/");
             scrollTo(0, 0);
           }}
           className="btn btn-primary mt-3"

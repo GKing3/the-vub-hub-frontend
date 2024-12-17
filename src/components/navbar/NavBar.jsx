@@ -3,14 +3,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import avatar_icon from "../../assets/avatar.png";
 import { AppContext } from "../../context/AppContext";
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import axios from "axios";
 
 const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const {userData,setUserData, token, setToken, url} = useContext(AppContext);
+  const {userData,setUserData, setToken, url} = useContext(AppContext);
   const [blogs, setBlogs] = useState([]);
   const [search, setSearch] = useState("");
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -86,6 +86,11 @@ const NavBar = () => {
                   News
                 </a>
               </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/FollowedPosts">
+                  Posts
+                </a>
+              </li>
             </ul>
             <form className="d-flex mx-auto">
               <input
@@ -100,7 +105,7 @@ const NavBar = () => {
               {userData ? (
                 <div className="dropdown">
                   <img
-                    src={userData.image_profile_url || avatar_icon}
+                    src={userData.image_profile_url}
                     alt="User profile avatar"
                     className="avatar"
                     onClick={() => setDropdownOpen(!isDropdownOpen)}
