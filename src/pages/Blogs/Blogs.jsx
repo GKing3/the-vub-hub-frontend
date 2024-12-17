@@ -13,9 +13,9 @@ const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
   const location = useLocation();
   const { userData } = useContext(AppContext);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [blogsPerPage, setBlogsPerPage] = useState(2);
+
   // const location = useLocation();
 
   const fetchBlogs = async (tag) => {
@@ -24,7 +24,6 @@ const Blogs = () => {
       console.log("Fetching link:", link);
       const response = await axios.get(link);
       console.log("API Response:", response);
-
       setBlogs(response.data);
     } catch (error) {
       console.log(error);
@@ -44,34 +43,43 @@ const Blogs = () => {
       <h2 className="page-title"> Blogs: {tag || "All"} </h2>
       <div className="blogs-container">
         <div>
-          {
-            blogs.length === 0 ? (
-              <p> No blogs found for this tag. </p>
-            ) : (
-              currentBlogs.map((blog) => (
-                <div key={blog.id} className='blog-wrapper'>
-                  <div> <img src={blog.image_url}/> </div>
-                  <div>
-                    <h2> {blog.title} </h2>
-                    <div className='blog-details'>
-                      <div className='author-details'>
+          {blogs.length === 0 ? (
+            <p> No blogs found for this tag. </p>
+          ) : (
+            currentBlogs.map((blog) => (
+              <div key={blog.id} className="blog-wrapper">
+                <div>
+                  {" "}
+                  <img src={blog.image_url} />{" "}
+                </div>
+                <div>
+                  <h2> {blog.title} </h2>
+                  <div className="blog-details">
+                    <div className="author-details">
                       <img
-                    src={blog.profile_img}
-                   alt={`${blog.username}'s profile`}
-                    className="rounded-circle me-2"
-                    style={{ width: "30px", height: "30px", objectFit: "cover" }}
-                     />
-                        <p> <a href="">{blog.username}</a> </p>
-                      </div>
+                        src={blog.profile_img}
+                        alt={`${blog.username}'s profile`}
+                        className="rounded-circle me-2"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          objectFit: "cover",
+                        }}
+                      />
                       <p>
                         {" "}
                         <a href="">{blog.username}</a>{" "}
                       </p>
                     </div>
-                    <p> {blog.tags} </p>
+                    <p>
+                      {" "}
+                      <a href="">{blog.username}</a>{" "}
+                    </p>
                   </div>
-                  <p> {blog.content} </p>
+                  <p> {blog.tags} </p>
                 </div>
+                <p> {blog.content} </p>
+              </div>
             ))
           )}
           <Pagination

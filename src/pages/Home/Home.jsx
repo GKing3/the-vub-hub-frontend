@@ -27,8 +27,9 @@ const Home = () => {
 
   const handleBlogs = async () => {
     try {
-      const response = await axios.get(url + "posts/post-with-locations");
-      console.log(response);
+      const response = await axios.get(
+        "http://localhost:8000/posts/post-with-locations"
+      );
       setBlogs(response.data);
     } catch (error) {
       console.error("Error fetching posts with locations:", error);
@@ -37,13 +38,14 @@ const Home = () => {
 
   const handlePopularPosts = async () => {
     try {
-        const response = await axios.get(url + `posts/popular-posts`);
-        setPopulairPosts(response.data);
+      const response = await axios.get(
+        "http://localhost:8000/posts/popular-posts"
+      );
+      setPopulairPosts(response.data);
     } catch (error) {
-        console.error("Error fetching popular posts:", error);
+      console.error("Error fetching popular posts:", error);
     }
-};
-
+  };
 
   useEffect(() => {
     handleBlogs();
@@ -110,7 +112,7 @@ const Home = () => {
       <div className="latest-container mb-5">
         <h2 className="text-center mb-4">Latest Posts</h2>
         <div className="d-flex overflow-auto">
-          {blogs.slice(0,10).map((blog) => (
+          {blogs.slice(0, 10).map((blog) => (
             <div
               className="card me-4 shadow-sm hover-card border"
               key={blog.id}
@@ -132,6 +134,9 @@ const Home = () => {
                   {blog.title}
                 </h5>
                 <p className="card-text">{blog.content}</p>
+                <Link to={`/blogs/${blog.id}`} className="read-more">
+                  View post
+                </Link>
                 <span className="d-block text-muted small mb-2">
                   {formatDate(blog.created_at)}
                 </span>
@@ -174,9 +179,9 @@ const Home = () => {
                 key={blog.id}
                 position={[blog.location.lat, blog.location.lng]}
                 icon={L.icon({
-                  iconUrl: blog.profile_img || "default-profile.png", 
-                  popupAnchor: [0, -40], 
-                  className: "custom-marker", 
+                  iconUrl: blog.profile_img || "default-profile.png",
+                  popupAnchor: [0, -40],
+                  className: "custom-marker",
                 })}
               >
                 <Popup>
