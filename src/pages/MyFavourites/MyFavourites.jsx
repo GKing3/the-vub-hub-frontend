@@ -31,13 +31,13 @@ const MyFavourites = () => {
 
   return (
     <div className="posts-container">
-      <h1 className="header">My Posts</h1>
+      <h1 className="header">My Favorites</h1>
       {loading ? (
         <p className="loading">Loading your posts...</p>
       ) : error ? (
         <p className="error">Error fetching posts: {error}</p>
       ) : posts.length === 0 ? (
-        <p className="no-posts">You have not created any posts yet.</p>
+        <p className="no-posts">You have not liked any posts yet.</p>
       ) : (
         <ul className="posts-list">
           {posts.map((post) => (

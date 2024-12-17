@@ -3,6 +3,14 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { AppContext } from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaWhatsapp,
+} from "react-icons/fa";
+import { SlDislike, SlLike } from "react-icons/sl";
+import { MdEmail } from "react-icons/md";
 import "./blogDetails.css";
 
 const API_URL = "http://localhost:8000"; // Backend URL
@@ -16,10 +24,15 @@ const BlogDetails = () => {
 
   // State initialization
   const [post, setPost] = useState([]);
+  const [author, setAuthor] = useState([]);
+  const [commentAuthor, setCommentAuthor] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [likes, setLikes] = useState(0);
   const [dislikes, setDislikes] = useState(0);
+  const [commentLikes, setCommentLikes] = useState(0);
+  const [commentDislikes, setCommentDislikes] = useState(0);
+  const [reactions, setReactions] = useState([]);
   const [loading, setLoading] = useState(true); // tracks wether data is still being fetched
   const [error, setError] = useState(null); // Holds any error messages if the data fetching fails.
 
@@ -35,9 +48,16 @@ const BlogDetails = () => {
   useEffect(() => {
     const fetchPostDetails = async () => {
       try {
-        console.log(userData.id);
-        const postResponse = await axios.get(`${API_URL}/posts/postId/${blogId}`);
+        const postResponse = await axios.get(
+          `${API_URL}/posts/postId/${blogId}`
+        );
         setPost(postResponse.data);
+
+        const userResponse = await axios.get(
+          `${API_URL}/user/${postResponse.data.authorId}`
+        );
+        setAuthor(userResponse.data);
+
         const commentsResponse = await axios.get(
           `${API_URL}/comments/${blogId}`
         );
@@ -50,15 +70,40 @@ const BlogDetails = () => {
           API_URL + `/react/count/${blogId}`
         );
         setDislikes(dislikesResponse.data.dislikes);
+
+        // fetch reaction-count for each comment
+        const reactionsPromises = commentsResponse.data.map((comment) =>
+          axios
+            .get(`${API_URL}/react/comments/reaction-count/${comment.id}`)
+            .then((res) => ({
+              commentId: comment.id,
+              likes: res.data.likes,
+              dislikes: res.data.dislikes,
+            }))
+        );
+
+        const reactionsData = await Promise.all(reactionsPromises);
+        // Map reactions to comment IDs
+        const reactionsMap = {};
+        reactionsData.forEach((reaction) => {
+          reactionsMap[reaction.commentId] = {
+            likes: reaction.likes,
+            dislikes: reaction.dislikes,
+          };
+        });
+        setReactions(reactionsMap);
       } catch (err) {
-        setError(err.response?.data?.error || err.message);
+        console.error("Error fetching post details:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchPostDetails();
-  }, [blogId, editFlag]); // Dependancy array, useEffect will only run when postId changes, thus it won't run for every rendering which isn't performant. [] empty means that it will only run one time.
+  }, [blogId, editFlag, reactions]); // Dependancy array, useEffect will only run when postId changes, thus it won't run for every rendering which isn't performant. [] empty means that it will only run one time.
+
+  // share function
+  const postUrl = `${window.location.origin}/blogs/${blogId}`;
+  const postTitle = encodeURIComponent(post.title);
 
   // Adding a new comment
   const handleAddComment = async () => {
@@ -201,6 +246,85 @@ const BlogDetails = () => {
     return <div className="error">Error fetching post: {error}</div>;
   }
 
+  const handleReact = async (commentId, reactionType) => {
+    if (!commentId) {
+      console.error("Comment ID is undefined.");
+      return;
+    }
+
+    try {
+      const reactionResponse = await axios.get(
+        `${API_URL}/react/comments/reaction/${commentId}`
+      );
+
+      // If already reacted with the same type, remove the reaction
+      if (reactionResponse.data.reaction === reactionType) {
+        await axios.delete(`${API_URL}/react/comments/reaction/${commentId}`);
+        setReactions((prevReactions) => ({
+          ...prevReactions,
+          [commentId]: {
+            ...prevReactions[commentId],
+            [reactionType]: (prevReactions[commentId]?.[reactionType] || 0) - 1,
+          },
+        }));
+      } else {
+        // Update the reaction in the backend
+        await axios.post(`${API_URL}/react/comments/react/${commentId}`, {
+          reaction: reactionType,
+        });
+
+        // Increment the new reaction and decrement the old one if it exists
+        setReactions((prevReactions) => ({
+          ...prevReactions,
+          [commentId]: {
+            likes:
+              reactionType === "like"
+                ? (prevReactions[commentId]?.likes || 0) + 1
+                : prevReactions[commentId]?.dislikes || 0,
+            dislikes:
+              reactionType === "dislike"
+                ? (prevReactions[commentId]?.dislikes || 0) + 1
+                : prevReactions[commentId]?.likes || 0,
+
+            // Decrement de vorige reactie
+            ...(prevReactions[commentId]?.reaction &&
+            prevReactions[commentId]?.reaction !== reactionType
+              ? {
+                  [prevReactions[commentId]?.reaction]:
+                    prevReactions[commentId]?.[
+                      prevReactions[commentId]?.reaction
+                    ] - 1,
+                }
+              : {}),
+          },
+        }));
+      }
+    } catch (err) {
+      if (err.response?.status == 404) {
+        // Handle case where no reaction found in database
+        console.log("No reaction found, proceeding with adding like.");
+        await axios.post(`${API_URL}/react/comments/react/${commentId}`, {
+          reaction: reactionType,
+        });
+        setReactions((prevReactions) => ({
+          ...prevReactions,
+          [commentId]: {
+            likes:
+              reactionType === "like"
+                ? (prevReactions[commentId]?.likes || 0) + 1
+                : prevReactions[commentId]?.likes || 0,
+            dislikes:
+              reactionType === "dislike"
+                ? (prevReactions[commentId]?.dislikes || 0) + 1
+                : prevReactions[commentId]?.dislikes || 0,
+          },
+        }));
+      } else {
+        console.error("Error toggling like:", err);
+      }
+    }
+  };
+
   //console.log(comments);
   //console.log(userData.image_profile_url);
 
@@ -213,10 +337,10 @@ const BlogDetails = () => {
             <div className="post-author">
               <img
                 className="author-profile-pic"
-                src={userData.image_profile_url}
-                alt={`${userData.name}'s profile`}
+                src={author.image_profile_url}
+                alt={`${author.name}'s profile`}
               />
-              <span className="author-name">{userData.name}</span>
+              <span className="author-name">{author.name}</span>
             </div>
           </div>
 
@@ -290,6 +414,46 @@ const BlogDetails = () => {
                 👎 {dislikes}
               </button>
             </div>
+            <div className="social-share-buttons">
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${postUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-icon facebook"
+              >
+                <FaFacebookF />
+              </a>
+              <a
+                href={`https://twitter.com/intent/tweet?text=${postTitle}&url=${postUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-icon twitter"
+              >
+                <FaTwitter />
+              </a>
+              <a
+                href={`https://www.linkedin.com/shareArticle?mini=true&url=${postUrl}&title=${postTitle}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-icon linkedin"
+              >
+                <FaLinkedinIn />
+              </a>
+              <a
+                href={`https://api.whatsapp.com/send?text=${postTitle}%20${postUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="social-icon whatsapp"
+              >
+                <FaWhatsapp />
+              </a>
+              <a
+                href={`mailto:?subject=${postTitle}&body=Check%20this%20out:%20${postUrl}`}
+                className="social-icon email"
+              >
+                <MdEmail />
+              </a>
+            </div>
           </div>
 
           {/* Comments Section */}
@@ -301,12 +465,12 @@ const BlogDetails = () => {
                   <li key={idx} className="comment-item">
                     <img
                       className="author-profile-pic-comment"
-                      src={userData.image_profile_url}
-                      alt={`${userData.name}'s profile`}
+                      src={comment.user_image}
+                      alt={`${comment.user_name}'s profile`}
                     />
-                    <span className="author-name">{userData.name}</span>
+                    <span className="author-name">{comment.user_name}</span>
                     <p className="comment-content">{comment.content}</p>
-                    {post.authorId === userData.id && (
+                    {comment.user_id === userData.id && (
                       <button
                         className="delete-comment-button"
                         onClick={() => handleRemoveComment(comment.commentId)}
@@ -314,6 +478,16 @@ const BlogDetails = () => {
                         Delete
                       </button>
                     )}
+                    <div className="comment-reactions">
+                      <button onClick={() => handleReact(comment.id, "like")}>
+                        👍 {reactions[comment.id]?.likes || 0}
+                      </button>
+                      <button
+                        onClick={() => handleReact(comment.id, "dislike")}
+                      >
+                        👎 {reactions[comment.id]?.dislikes || 0}
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>

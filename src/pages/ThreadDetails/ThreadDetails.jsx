@@ -76,7 +76,7 @@ const ThreadDetailPage = () => {
         content: newPostContent,
         image: newImage,
         tags: newTag,
-        reading_time: null, // Is this necessary????
+        //reading_time: null, // Is this necessary????
         threadId: threadId,
       });
 
@@ -137,10 +137,10 @@ const ThreadDetailPage = () => {
                 <li key={post.id} className="post-item">
                   <img
                     className="author-profile-pic"
-                    src={userData.image_profile_url}
-                    alt={`${userData.name}'s profile`}
+                    src={post.author_image}
+                    alt={`${post.author_name}'s profile`}
                   />
-                  <span className="author-name">{userData.name}</span>
+                  <span className="author-name">{post.author_name}</span>
                   <h2 className="post-title">{post.title}</h2>
                   <p className="post-content">
                     {post.content.length > 100
@@ -150,7 +150,9 @@ const ThreadDetailPage = () => {
                   <Link to={`/blogs/${post.id}`} className="read-more">
                     View post
                   </Link>
-                  <span className="post-date">{post.created_at}</span>
+                  <span className="post-date">
+                    Posted on: {new Date(post.created_at).toLocaleDateString()}
+                  </span>
                 </li>
               ))}
             </ul>
