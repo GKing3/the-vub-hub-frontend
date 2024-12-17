@@ -7,11 +7,9 @@ import { jwtDecode } from "jwt-decode";
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
-  const [userData, setUserData] = useState(
-    () => JSON.parse(sessionStorage.getItem("userData")) || ""
-  );
+  const [userData, setUserData] = useState(() => JSON.parse(sessionStorage.getItem("userData")) || "");
   const [token, setToken] = useState("");
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState({});
 
   const fetchUserData = async () => {
     if (!token) return;
@@ -56,6 +54,10 @@ export const AppContextProvider = (props) => {
     console.log(userData);
   }, [userData]);
 
+  useEffect(() => {
+    console.log(users);
+  }, [users])
+
   const value = {
     userData,
     setUserData,
@@ -66,8 +68,10 @@ export const AppContextProvider = (props) => {
   };
 
   useEffect(() => {
-    fetchUserData();
-    fetchDetails();
+    if(token) {
+      fetchUserData();
+      fetchDetails();
+    }
   }, [token]);
 
   return (

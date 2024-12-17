@@ -27,18 +27,33 @@ const MyProfile = () => {
     formData.append('image', newFile);
 
     try {
-      const response = await axios.post(url + `user/${userData.id}`, formData, {
+      const response = await axios.put(url + `user/update-profile-img`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
         }
       });
-      console.log(response.data);
+      // console.log(response.data);
       if(response.data.code == 200) {
         const updatedImageUrl = response.data.image_profile_url;
         setUserData((prev) => ({...prev, image_profile_url: updatedImageUrl}))
       }
     } catch (error) {
       toast.error('Error while uploading image', error);
+    }
+  }
+
+  const handleNameChange = async () => {
+    console.log('new name', userData.name);
+    const response = await axios.put(url + 'user/update-name', {
+      name: userData.name
+    });
+
+    if(response.data.code == 200) {
+      setUserData(prev => ({...prev, name: userData.name}));
+      toast.success('Updated name successfully!');
+    } else {
+      console.log('Could not update name');
     }
   }
 
@@ -121,7 +136,10 @@ const MyProfile = () => {
           edit 
           ? (
             <>
-              <button onClick={() => setEdit(false)} type="submit"> Save </button>
+              <button onClick={() => {
+                handleNameChange();
+                setEdit(false);
+              }} type="submit"> Save </button>
             </>
           ) : ( <button onClick={() => setEdit(true)} type='submit'> Edit Profile </button> )
         }

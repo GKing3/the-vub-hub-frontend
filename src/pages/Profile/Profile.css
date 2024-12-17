@@ -1,0 +1,53 @@
+.profile-container {
+    padding: 1rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-banner {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    background-color: black;
+}
+
+.banner-img {
+    background-color: blanchedalmond;
+}
+
+.profile-avatar {
+    position: absolute;
+    bottom: -50px;
+    left: 20px;
+}
+
+.follow-button {
+    position: absolute;
+    top: 260px;
+    right: 30px;
+    padding: .5rem 1rem;
+    color: #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+}
+
+.profile-pic img {
+    border-radius: 50%;
+    border: 3px dotted #ddd;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-details {
+    text-align: center;
+    padding-top: 5rem;
+}
+
+.user-name {
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    margin-top: .5rem;
+}

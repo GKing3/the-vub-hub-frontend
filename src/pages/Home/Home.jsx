@@ -1,15 +1,16 @@
 import "./Home.css";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { url } from "../../Api";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../../context/AppContext";
 
 const Home = () => {
+  const {url} = useContext(AppContext);
   const [blogs, setBlogs] = useState([]);
   const navigate = useNavigate();
   // const [likesCount, setLikesCount] = useState(0);
@@ -26,7 +27,7 @@ const Home = () => {
 
   const handleBlogs = async () => {
     try {
-      const response = await axios.get(url + "api/post-with-locations");
+      const response = await axios.get(url + "posts/post-with-locations");
       console.log(response);
       setBlogs(response.data);
     } catch (error) {
@@ -71,7 +72,7 @@ const Home = () => {
                   className="rounded-circle me-2"
                   style={{ width: "30px", height: "30px", objectFit: "cover" }}
                 />
-                <span className="text-secondary fw-bold mb-4">
+                <span onClick={() => navigate(`/profile/${blog.user_id}`)} className="text-secondary fw-bold mb-4">
                   {blog.username}
                 </span>
                 <h5 className="card-title" style={{ color: "#2c3e50" }}>
@@ -82,7 +83,7 @@ const Home = () => {
                   View post
                 </Link>
                 <span className="d-block text-muted small mb-2">
-                  {new Date(blog.created_at).toLocaleDateString()}
+                  {formatDate(blog.created_at)}
                 </span>
                 <span
                   className="badge"
@@ -125,13 +126,13 @@ const Home = () => {
                   className="rounded-circle me-2"
                   style={{ width: "30px", height: "30px", objectFit: "cover" }}
                 />
-                <span className="text-secondary fw-bold">{blog.username}</span>
+                <span onClick={() => navigate(`/profile/${blog.user_id}`)} className="text-secondary fw-bold">{blog.username}</span>
                 <h5 className="card-title" style={{ color: "#2c3e50" }}>
                   {blog.title}
                 </h5>
                 <p className="card-text">{blog.content}</p>
                 <span className="d-block text-muted small mb-2">
-                  {new Date(blog.created_at).toLocaleDateString()}
+                  {formatDate(blog.created_at)}
                 </span>
                 <span
                   className="badge"

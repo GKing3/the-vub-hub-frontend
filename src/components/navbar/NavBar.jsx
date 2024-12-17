@@ -11,6 +11,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { userData, token, setToken, url } = useContext(AppContext);
+  console.log(userData);
   const [blogs, setBlogs] = useState([]);
   const [search, setSearch] = useState("");
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -19,15 +20,6 @@ const NavBar = () => {
     if (e.key === "Enter") {
       const query = e.target.value;
       if (!query) return;
-
-      // if(location.pathname === '/posts/') {
-      //   const newSearch = `?tag=${query}`;
-      //   if(location.search !== newSearch) {
-      //     navigate({ pathname: location.pathname, search: newSearch });
-      //   }
-      // } else {
-      //   navigate(`/posts/?tag=${query}`);
-      // }
 
       try {
         const response = await axios.get(url + `posts/tag/${query}`);
@@ -107,7 +99,7 @@ const NavBar = () => {
               {userData ? (
                 <div className="dropdown">
                   <img
-                    src={avatar_icon}
+                    src={userData.image || avatar_icon}
                     alt="User profile avatar"
                     className="avatar"
                     onClick={() => setDropdownOpen(!isDropdownOpen)}
