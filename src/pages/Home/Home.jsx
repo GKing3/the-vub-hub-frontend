@@ -1,10 +1,9 @@
 import "./Home.css";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { url } from "../../Api";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
@@ -13,8 +12,10 @@ import "leaflet-routing-machine";
 
 
 
+import { AppContext } from "../../context/AppContext";
 
 const Home = () => {
+  const {url} = useContext(AppContext);
   const [blogs, setBlogs] = useState([]);
   const [populairPosts, setPopulairPosts] = useState([]);
   const [routing, setRouting] = useState(null);
@@ -119,7 +120,7 @@ const Home = () => {
                   className="rounded-circle me-2"
                   style={{ width: "30px", height: "30px", objectFit: "cover" }}
                 />
-                <span className="text-secondary fw-bold mb-4">
+                <span onClick={() => navigate(`/profile/${blog.user_id}`)} className="text-secondary fw-bold mb-4">
                   {blog.username}
                 </span>
                 <h5 className="card-title" style={{ color: "#2c3e50" }}>
@@ -173,7 +174,7 @@ const Home = () => {
                   className="rounded-circle me-2"
                   style={{ width: "30px", height: "30px", objectFit: "cover" }}
                 />
-                <span className="text-secondary fw-bold">{blog.username}</span>
+                <span onClick={() => navigate(`/profile/${blog.user_id}`)} className="text-secondary fw-bold">{blog.username}</span>
                 <h5 className="card-title" style={{ color: "#2c3e50" }}>
                   {blog.title}
                 </h5>

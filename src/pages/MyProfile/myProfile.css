@@ -1,36 +1,41 @@
-.profile-container {
+.my-profile-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    /* align-items: center; */
+    height: 100vh;
     padding: 6rem 0;
+    margin-inline: 2.1rem;
 }
 
-.profile-details {
+.my-profile-details {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
-.profile-details input,
-.profile-details select {
+.my-profile-details input,
+.my-profile-details select {
     padding: .6rem;
 }
 
-.profile-details button {
+.my-profile-details button {
     padding: .5rem;
     color: white;
     border: none;
     cursor: pointer;
 }
 
-.profile-avatar {
+.my-profile-avatar {
     position: relative;
+    top: 2rem;
 }
 
-.profile-avatar input {
+/* .my-profile-avatar input {
     visibility: hidden;
-}
+} */
 
-.profile-avatar label {
+.my-profile-avatar label {
     background-color: #fff;
     position: absolute;
     width: 2rem;
@@ -38,7 +43,8 @@
     place-items: center;
     font-size: 1rem;
     padding: .35rem .4rem;
-    right: 6.5rem;
+    top: 4rem;
+    right: 6.2rem;
     bottom: 2.4rem;
     border-radius: 50%;
     cursor: pointer;

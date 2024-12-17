@@ -18,6 +18,7 @@ import ThreadDetailPage from "./pages/ThreadDetails/ThreadDetails";
 import Search from "./pages/Search/Search";
 import Posts from "./pages/Posts/Posts";
 
+import Profile from "./pages/Profile/Profile";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             path="/threadDetail/:threadId"
             element={<ThreadDetailPage />}
           />
+          <Route path="/profile/:id" element={<Profile/>}></Route>
         </Routes>
         <Footer />
       </AppContextProvider>

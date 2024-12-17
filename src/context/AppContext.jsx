@@ -57,6 +57,10 @@ export const AppContextProvider = (props) => {
     console.log(userData);
   }, [userData]);
 
+  useEffect(() => {
+    console.log(users);
+  }, [users])
+
   const value = {
     userData,
     setUserData,
@@ -67,8 +71,10 @@ export const AppContextProvider = (props) => {
   };
 
   useEffect(() => {
-    fetchUserData();
-    fetchDetails();
+    if(token) {
+      fetchUserData();
+      fetchDetails();
+    }
   }, [token]);
 
 
