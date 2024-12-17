@@ -71,9 +71,6 @@ export const AppContextProvider = (props) => {
     fetchDetails();
   }, [token]);
 
-    useEffect(() => {
-      console.log(userData);
-  }, [userData]);
 
   return (
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
