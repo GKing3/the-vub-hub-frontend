@@ -100,7 +100,7 @@ const NavBar = () => {
               {userData ? (
                 <div className="dropdown">
                   <img
-                    src={userData.image || avatar_icon}
+                    src={userData.image_profile_url || avatar_icon}
                     alt="User profile avatar"
                     className="avatar"
                     onClick={() => setDropdownOpen(!isDropdownOpen)}

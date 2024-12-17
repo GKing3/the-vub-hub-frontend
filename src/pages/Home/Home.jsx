@@ -37,7 +37,7 @@ const Home = () => {
 
   const handlePopularPosts = async () => {
     try {
-        const response = await axios.get("http://localhost:8000/posts/popular-posts");
+        const response = await axios.get(url + `posts/popular-posts`);
         setPopulairPosts(response.data);
     } catch (error) {
         console.error("Error fetching popular posts:", error);

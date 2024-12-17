@@ -4,6 +4,7 @@ import avatar_icon from "../../assets/avatar.png";
 import { AppContext } from '../../context/AppContext';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+axios.defaults.withCredentials = true;
 
 
 const Profile = () => {
@@ -66,32 +67,32 @@ const Profile = () => {
     }
     
     handleLoggedInUser();
-  }, [id, userData, token])
+  }, [id, userData, token, userProfile])
 
   return (
     <div className='profile-container'>
       <div className='profile-banner'>
         <div className='banner-img'></div>
         <div className='profile-avatar'>
-          <div className='profile-pic'> <img src={userProfile?.image || avatar_icon} alt="User profile picture" /> </div>
+          <div className='profile-pic'> <img src={userProfile?.image_profile_url || avatar_icon} alt="User profile picture" /> </div>
         </div>
         <button onClick={handleFollow} className='follow-button'> {isFollowing ? 'Unfollow' : 'Follow'} </button>
       </div>
       <div className='profile-details'>
         <p className='user-name'> {userProfile?.name} </p>
         <div className='follow-container'>
-        <div>
-            <p> Blogs </p>
-            <span> {blogsCount} </span>
-        </div>
-        <div>
-            <p> Followers </p>
-            <span> {followersCount} </span>
-        </div>
-        <div>
-            <p> Following </p>
-            <span> {followingCount} </span>
-        </div>
+          <div>
+              <p> Blogs </p>
+              <span> {blogsCount} </span>
+          </div>
+          <div>
+              <p> Followers </p>
+              <span> {followersCount} </span>
+          </div>
+          <div>
+              <p> Following </p>
+              <span> {followingCount} </span>
+          </div>
         </div>
         <p> Email: {userProfile?.email} </p>
       </div>

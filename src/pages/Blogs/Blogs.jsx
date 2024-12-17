@@ -72,7 +72,6 @@ const Blogs = () => {
                   </div>
                   <p> {blog.content} </p>
                 </div>
-              </div>
             ))
           )}
           <Pagination
