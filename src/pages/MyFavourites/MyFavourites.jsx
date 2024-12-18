@@ -44,9 +44,10 @@ const MyFavourites = () => {
             <li key={post.id} className="post-item">
               <img
                 className="author-profile-pic"
-                src={userData.image_profile_url}
-                alt={`${userData.name}'s profile`}
+                src={post.image_profile_url}
+                alt={post.name}
               />
+               <h2 className="post-name">{post.name}</h2>
               <h2 className="post-title">{post.title}</h2>
               <p className="post-content">
                 {post.content.length > 100

@@ -13,6 +13,7 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const {id} = useParams();
+
   const [userProfile, setUserProfile] = useState(null);
 
   const [followersCount, setFollowersCount] = useState(0);
@@ -30,7 +31,7 @@ const Profile = () => {
         setUserProfile(response.data);
       setFollowersCount(response.data.followers.length || 0);
       setFollowingCount(response.data.following.length || 0);
-      setIsFollowing(response.data.followers.some(user => user.id === userData.id))
+      setIsFollowing(response.data.followers.includes(userData.id));
     }
 
     const res = await axios.get(url + `posts/user/${userId}`);
