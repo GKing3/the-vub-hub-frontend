@@ -63,10 +63,8 @@ const ThreadDetailPage = () => {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem("token");
-
-      // This if test can be omitted because backend checks for authentication???
-      if (!token) {
+      
+      if (!userData) {
         alert("You must be logged in to create a thread.");
         return;
       }
@@ -85,9 +83,10 @@ const ThreadDetailPage = () => {
         // Destructuring the response into variables
         const { postId, title, content, image, tags, authorId, threadId } =
           response.data;
+      
         setPosts([
           ...posts,
-          { id: postId, title, content, image, tags, authorId, threadId },
+          { id: postId, title, content, image, tags, authorId, threadId,author_name:userData.name, author_image: userData.image_profile_url},
         ]);
         closeForm(); // close form after creating thread
       }
@@ -101,15 +100,6 @@ const ThreadDetailPage = () => {
     }
   };
 
-  const handleDeleteThread = async (threadId) => {
-    try {
-      await axios.delete(`${API_URL}/threads/${threadId}`);
-      navigate("/Threads");
-    } catch (err) {
-      console.error("Error removing thread:", err);
-      alert("Failed to remove thread. Please try again.");
-    }
-  };
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -120,12 +110,6 @@ const ThreadDetailPage = () => {
           <header>
             {/* thread object is given in an array */}
             <h1>{thread[0].title}</h1>
-            <button
-              className="create-post-button"
-              onClick={() => handleDeleteThread(threadId)}
-            >
-              Delete thread
-            </button>
             <button className="create-post-button" onClick={openForm}>
               Create post
             </button>
@@ -140,7 +124,7 @@ const ThreadDetailPage = () => {
                     src={post.author_image}
                     alt={`${post.author_name}'s profile`}
                   />
-                  <span className="author-name">{post.author_name}</span>
+                  <span onClick={() => navigate(`/profile/${post.user_id}`)} className="text-secondary fw-bold">{post.author_name}</span>
                   <h2 className="post-title">{post.title}</h2>
                   <p className="post-content">
                     {post.content.length > 100

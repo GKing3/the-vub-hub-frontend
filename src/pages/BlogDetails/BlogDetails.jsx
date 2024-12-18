@@ -51,6 +51,7 @@ const BlogDetails = () => {
         const postResponse = await axios.get(
           `${API_URL}/posts/postId/${blogId}`
         );
+        console.log("postt", postResponse);
         setPost(postResponse.data);
 
         const userResponse = await axios.get(
@@ -230,7 +231,7 @@ const BlogDetails = () => {
 
   const handleDeletePost = async (e) => {
     try {
-      const response = await axios.delete(`${API_URL}/posts/${blogId}`);
+      const response = await axios.delete(`${API_URL}/posts/${e}`);
       navigate("/Threads");
     } catch (err) {
       console.error("Error removing post:", err);
@@ -392,13 +393,15 @@ const BlogDetails = () => {
               {/* Post Content */}
               <p className="post-content">{post.content}</p>
             </div>
-            <div className="image-section">
-              <img
-                className="post-image"
-                src={post.image_url}
-                alt="Post image"
-              />
-            </div>
+            {post.image_url && (
+  <div className="image-section">
+    <img
+      className="post-image"
+      src={post.image_url}
+      alt="Post image"
+    />
+  </div>
+)}
           </div>
 
           {/* Post footer */}
@@ -473,7 +476,7 @@ const BlogDetails = () => {
                     {comment.user_id === userData.id && (
                       <button
                         className="delete-comment-button"
-                        onClick={() => handleRemoveComment(comment.commentId)}
+                        onClick={() => handleRemoveComment(comment.id)}
                       >
                         Delete
                       </button>
