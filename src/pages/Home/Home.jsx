@@ -210,7 +210,7 @@ const Home = () => {
         <h2 className="text-center mb-4">Explore the Map</h2>
         <MapContainer
           center={[50.8503, 4.3517]}
-          zoom={15}
+          zoom={12}
           style={{ height: "500px", borderRadius: "8px" }}
           scrollWheelZoom={false}
           ref={setMap}
@@ -244,7 +244,15 @@ const Home = () => {
                     {blog.content && (
                       <p style={{ fontSize: "14px", lineHeight: "1.5" }}>{blog.content}</p>
                     )}
-                              <div className="input-group mb-4">
+                  {blog.image_url && (
+  <img
+    src={blog.image_url}
+    alt={blog.title || "No Image"}
+    className="card-img-bottom"
+    style={{ height: "200px", objectFit: "cover", width: "100%" }}
+  />
+)}
+         <div className="input-group mb-4">
           <input
             type="text"
             className="form-control"

@@ -13,6 +13,7 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const {id} = useParams();
+
   const [userProfile, setUserProfile] = useState(null);
 
   const [followersCount, setFollowersCount] = useState(0);

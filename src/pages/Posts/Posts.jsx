@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useContext } from "react";
+import { useEffect, useState,  useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -8,7 +8,12 @@ import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Posts.css";
 
+
+
 const FollowedPost = () => {
+
+  const navigate = useNavigate();
+ 
   const { userData } = useContext(AppContext);
   const [posts, setPosts] = useState([]);
   const [Followedposts, setFollowedposts] = useState([]);
@@ -132,12 +137,18 @@ const FollowedPost = () => {
                         alt={post.username}
                         style={{ width: "40px", height: "40px" }}
                       />
-                      <span>{post.username}</span>
+                      <span onClick={() => navigate(`/profile/${post.user_id}`)} className="text-secondary fw-bold">{post.username}</span>
                     </div>
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title mb-3">{post.title}</h5>
                       <p className="card-text flex-grow-1 mb-3">{post.content}</p>
                     </div>
+                    <span
+                  className="badge"
+                  style={{ backgroundColor: "#34495e", color: "white" }}
+                >
+                  {post.tags}
+                </span>
                     <Link to={`/blogs/${post.id}`} className="read-more">
                        View post
                     </Link>

@@ -1,7 +1,6 @@
 import "./navBar.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
-import avatar_icon from "../../assets/avatar.png";
 import { AppContext } from "../../context/AppContext";
 import {toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
@@ -114,7 +113,7 @@ const NavBar = () => {
                   {isDropdownOpen && (
                     <ul className="custom-dropdown">
                       <li onClick={() => navigate("my-profile")}>Profile</li>
-                      <li onClick={() => navigate("my-blogs")}>My Blogs</li>
+                      <li onClick={() => navigate("my-blogs")}>My Posts</li>
                       <li onClick={() => navigate("my-favourites")}>
                         My Favourites
                       </li>

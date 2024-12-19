@@ -20,11 +20,15 @@ const SearchResultsPage = () => {
               <div className="col-md-4 mb-3" key={index}>
                 <div className="card">
                   <div className="card-body">
+                  <img
+                  src={user.image_profile_url}
+                  className="rounded-circle me-2"
+                  style={{ width: "30px", height: "30px", objectFit: "cover" }}
+                />
                     <h5 className="card-title">{user.name}</h5>
-                    <p className="card-text">{user.email}</p>
                     <button
                       className="btn btn-primary"
-                      onClick={() => alert(`View profile for ${user.name}`)}
+                      onClick={() => navigate(`/profile/${user.id}`)}
                     >
                       View Profile
                     </button>

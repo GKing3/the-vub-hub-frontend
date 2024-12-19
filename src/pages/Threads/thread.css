@@ -37,6 +37,11 @@
     margin-top: 20px;
   }
   
+  .thread-list ul {
+    list-style-type: none; 
+    margin: 0;
+  }
+
   .thread-list h2 {
     margin-bottom: 15px;
     color: #004080;
