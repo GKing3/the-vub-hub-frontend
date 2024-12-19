@@ -1,16 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
 import './myProfile.css';
 import avatar_icon from "../../assets/avatar.png";
-// import { PencilSquare } from 'react-bootstrap-icons'
 import { AppContext } from '../../context/AppContext';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom"
 axios.defaults.withCredentials = true;
 
-
 const MyProfile = () => {
-  const {userData, setUserData, updateAvatar, url, token} = useContext(AppContext);
-  console.log(userData);
+  const {userData, setUserData, url, token} = useContext(AppContext);
+  const navigate = useNavigate();
 
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
@@ -18,103 +16,116 @@ const MyProfile = () => {
 
   const [edit, setEdit] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
-  // const [file, setFile] = useState(null);
+ 
+  const [newname, setNewname] = useState('');
 
-  // const handleImageChange = async (e) => {
-  //   const newFile = URL.createObjectURL(e.target.files[0])
-  //   setFile(newFile);
-  //   updateAvatar(newFile);
-
-  //   const formData = new FormData();
-  //   formData.append('image', newFile);
-
-  //   try {
-  //     const response = await axios.put(url + `user/update-profile-img`, formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data',
-  //         'Authorization': `Bearer ${token}`
-  //       }
-  //     });
-  //     // console.log(response.data);
-  //     if(response.data.code == 200) {
-  //       const updatedImageUrl = response.data.image_profile_url;
-  //       setUserData((prev) => ({...prev, image_profile_url: updatedImageUrl}))
-  //     }
-  //   } catch (error) {
-  //     toast.error('Error while uploading image', error);
-  //   }
-  // }
-
-  const handleImageChange = async (e) => {
+  const handleImageChange = (e) => {
     const imageInput = e.target.value;
+    setImageUrl(imageInput);
+  }
 
-    const validUrl = (str) => {
+
+  const saveImageChange = async () => {
+    const isValidUrl = (str) => {
       try {
-        new URL(str);
+        new URL(str); 
         return true;
-      } catch (_) {
+      } catch {
         return false;
       }
+    };
+  
+    if (!isValidUrl(imageUrl)) {
+      setImageUrl('');
+      alert('Invalid image URL'); 
+      return false;
     }
 
-    if(validUrl(imageInput)) {
-      setImageUrl(imageInput);
-      updateAvatar(imageInput);
-
-      // const formData = new FormData();
-      // formData.append('image', imageInput);
-
-      try {
-        const response = await axios.put(url + `user/update-profile-img`, {image_profile_url: imageInput}, {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        });
-        // console.log(response.data);
-        if(response.data.code == 200) {
-          const updatedImageUrl = response.data.image_profile_url;
-          setUserData((prev) => ({...prev, image_profile_url: updatedImageUrl}))
+    try {
+      const response = await axios.put(url + `user/update-profile-img`, { image_profile_url: imageUrl }, {
+        headers: {
+          'Content-Type': 'application/json',
         }
-      } catch (error) {
-        toast.error('Error while uploading image', error);
+      });
+      if (response.data.code === 200) {
+        const updatedImageUrl = response.data.image_profile_url;
+        setUserData((prev) => ({ ...prev, image_profile_url: updatedImageUrl }));
+        setImageUrl('');
       }
+    } catch (error) {
+      ImageUrl('');
+      alert('url not valid', error);
     }
-  }
+  };
 
   const handleNameChange = async () => {
-    console.log('new name', userData.name);
-    const response = await axios.put(url + 'user/update-name', {
-      name: userData.name
-    });
-
-    if(response.data.code == 200) {
-      setUserData(prev => ({...prev, name: userData.name}));
-      toast.success('Updated name successfully!');
-    } else {
-      console.log('Could not update name');
+    if (newname.length <= 3) {
+      setNewname('');
+      alert('Name must be at least 3 characters long');
+      return;
     }
-  }
+  
+    try {
+      const response = await axios.put(url + 'user/update-name', {
+        name: newname,
+      });
+  
+  
+      if (response.status === 200) {
+        setUserData((prev) => ({ ...prev, name: newname }));
+        alert('Name updated successfully!');
+        setEdit(false);
+      } else {
+        console.error('Unexpected status code:', response.status);
+        alert('Could not update name. Please try again.');
+        setEdit(false);
+      }
+    } catch (error) {
+      console.error('Error updating name:', error);
+      alert('Error updating name. Please check your connection or try again later.');
+      setEdit(false);
+    }
+  };
+  
+  
 
   const fetchFollowCount = async () => {
-    const response = await axios.get(url + `user/${userData.id}`);
-    console.log(response.data);
+    const source = axios.CancelToken.source();
+    try {
+      const response = await axios.get(url + `user/${userData.id}`, { cancelToken: source.token });
+      if (response.data) {
+        setFollowersCount(response.data.followers.length || 0);
+        setFollowingCount(response.data.following.length || 0);
+      }
 
-    if(response.data) {
-      setFollowersCount(response.data.followers.length || 0);
-      setFollowingCount(response.data.following.length || 0);
+      const res = await axios.get(url + `posts/user/${userData.id}`, { cancelToken: source.token });
+      if (res.data) {
+        setBlogsCount(res.data.length || 0);
+      }
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log('Request canceled:', error.message);
+      } else {
+        console.error(error);
+        alert.error('Error fetching data');
+      }
     }
 
-    const res = await axios.get(url + `posts/user/${userData.id}`);
-    if(res.data) {
-      setBlogsCount(res.data.length || 0);
-    }
-  }
+    return () => source.cancel('Component unmounted, canceling requests');
+  };
 
   useEffect(() => {
-    if(userData.id) {
-      fetchFollowCount();
-    }
-  }, [userData, token])
+    let isMounted = true;
+    const fetchData = async () => {
+      if (isMounted && userData.id) {
+        await fetchFollowCount();
+      }
+    };
+    fetchData();
+    return () => {
+      isMounted = false;
+    };
+  }, [userData, token]);
 
   return (
     <div className='my-profile-container'>
@@ -124,14 +135,26 @@ const MyProfile = () => {
             edit ? 
             (
               <>
-                <div className='user-pic'> <img src={imageUrl || userData.image_profile_url || avatar_icon} alt="User profile picture" /> </div>
+                <div className='user-pic'> 
+                  <img src={userData.image_profile_url || avatar_icon} alt="User profile picture" /> 
+                </div>
                 <div>
-                  <input onChange={handleImageChange} type="text" name="avatar" id='avatar' placeholder='Enter image url'/>
-                  {/* <label htmlFor='avatar'> {<PencilSquare/>} </label> */}
+                  <input 
+                    type="text" 
+                    name="avatar" 
+                    id='avatar' 
+                    placeholder='Enter image url' 
+                    value={imageUrl} 
+                    onChange={handleImageChange}
+                  />
                 </div>
               </>
             ) : (
-              <> <div className='user-pic'> <img src={imageUrl || userData.image_profile_url || avatar_icon} alt="User profile picture" /> </div> </>
+              <> 
+                <div className='user-pic'> 
+                  <img src={userData.image_profile_url || avatar_icon} alt="User profile picture" /> 
+                </div> 
+              </>
             )
           }
         </div>
@@ -140,7 +163,7 @@ const MyProfile = () => {
           ? (
             <>
               <p className='user-name'> Name: </p>
-              <input type='text' value={userData.name} onChange={e => setUserData(prev => ({...prev, name: e.target.value}))}/>
+              <input type='text' value={newname} onChange={e => setNewname(e.target.value)}/>
             </>
           ) : ( <p className='user-name'> {userData.name} </p> )
         }
@@ -158,43 +181,25 @@ const MyProfile = () => {
             <span> {followingCount} </span>
           </div>
         </div>
-        <p> Email: {userData.email} </p>
-        {/* {
-          edit
-          ? 
-            <>
-              <p> Gender: </p>
-              <select onChange={e => setUserData(prev => ({...prev, gender: e.target.value}))}>
-                <option value="Male"> Male </option>
-                <option value="Female"> Female </option>
-                <option value="Prefer not to say"> Prefer not to say </option>
-              </select>
-            </>
-          : <p> Gender: {userData.gender} </p> 
-        }
         {
           edit 
           ? (
             <>
-              <p> Date of birth: </p>
-              <input type="date" value={userData.dob} onChange={e => setUserData(prev => ({...prev, dob: e.target.value}))}/>
-            </>
-          ) : ( <p> Date of birth: {userData.dob} </p> )
-        } */}
-        {
-          edit 
-          ? (
-            <>
-              <button onClick={() => {
-                handleNameChange();
-                setEdit(false);
+            <button onClick={async () => {
+                const imageSuccess = imageUrl ? await saveImageChange() : true;
+                const nameSuccess = newname ? await handleNameChange() : true;
+
+                if (imageSuccess && nameSuccess) {
+                  setEdit(false);
+                }
+                navigate("/");
               }} type="submit"> Save </button>
             </>
           ) : ( <button onClick={() => setEdit(true)} type='submit'> Edit Profile </button> )
         }
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MyProfile
+export default MyProfile;

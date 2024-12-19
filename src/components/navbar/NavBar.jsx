@@ -4,9 +4,12 @@ import { useContext, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import {toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import axios from "axios";
 
 const NavBar = () => {
+ 
   const navigate = useNavigate();
   const location = useLocation();
   const {userData,setUserData, setToken, url} = useContext(AppContext);
@@ -14,18 +17,20 @@ const NavBar = () => {
   const [search, setSearch] = useState("");
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
-
+  // Function to handle search functionality
   const handleSearch = async (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       const zoek = e.target.value;
       if (!zoek) return;
       try {
+        // Sending a search query to the backend API
         const response = await axios.get('http://localhost:8000/search',{params: {
           query: zoek
         }
         });
         const { users, threads, posts } = response.data.results;
+        // Navigating to search results page with the found data
         navigate("/search-results", { state: { users, threads, posts } });
       } catch (error) {
         console.error("Search failed:", error);
@@ -35,28 +40,35 @@ const NavBar = () => {
   };
 
 
-
+  // Function to handle user logout
   const handleLogout = async () => {
     try {
         const res = await axios.post('http://localhost:8000/auth/logout'); 
         setDropdownOpen(false);
         setToken(false);
+        // Clearing user data from session storage
         sessionStorage.removeItem('userData');
         setUserData(false);
+        // Redirecting to home page after logout
         navigate("/");
-    
     } catch (err) {
       toast.error("An error occurred while logging out.");
     }
   };
 
+
+
+
   return (
     <body>
+      {/* Navigation bar setup */}
       <nav className="navbar navbar-expand-lg">
         <div className="container-fluid">
+          {/* site name and home link if clicked on the name */}
           <a className="navbar-brand site-name" href="/">
             The VUB Hub
           </a>
+          {/* Responsive navbar */}
           <button
             className="navbar-toggler"
             type="button"
@@ -70,6 +82,7 @@ const NavBar = () => {
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
+              {/* Navigation links */}
               <li className="nav-item">
                 <a className="nav-link" href="/">
                   Home
@@ -91,6 +104,7 @@ const NavBar = () => {
                 </a>
               </li>
             </ul>
+            {/* Search form */}
             <form className="d-flex mx-auto">
               <input
                 className="form-control me-2"
@@ -101,8 +115,10 @@ const NavBar = () => {
             </form>
 
             <div className="login">
+               {/* if user is logged-in */}
               {userData ? (
                 <div className="dropdown">
+                  {/* User profile avatar */}
                   <img
                     src={userData.image_profile_url}
                     alt="User profile avatar"
@@ -110,11 +126,16 @@ const NavBar = () => {
                     onClick={() => setDropdownOpen(!isDropdownOpen)}
                     style={{ cursor: "pointer" }}
                   />
+                   {/* if dropdown is open (user clicked on his image profile) */}
                   {isDropdownOpen && (
                     <ul className="custom-dropdown">
-                      <li onClick={() => navigate("my-profile")}>Profile</li>
-                      <li onClick={() => navigate("my-blogs")}>My Posts</li>
-                      <li onClick={() => navigate("my-favourites")}>
+                      {/* Dropdown menu items */}
+                      <li onClick={() =>{ setDropdownOpen(!isDropdownOpen);
+                         navigate("my-profile");}}>Profile</li>
+                      <li onClick={() => { setDropdownOpen(!isDropdownOpen);
+                       navigate("my-blogs")}}>My Posts</li>
+                      <li onClick={() => { setDropdownOpen(!isDropdownOpen);
+                        navigate("my-favourites")}}>
                         My Favourites
                       </li>
                       <li onClick={handleLogout}>Logout</li>
