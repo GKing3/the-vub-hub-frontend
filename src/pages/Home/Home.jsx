@@ -1,30 +1,30 @@
+
 import "./Home.css";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "leaflet-routing-machine";
 
-
-
 import { AppContext } from "../../context/AppContext";
 
 const Home = () => {
-  const {url} = useContext(AppContext);
-  const [blogs, setBlogs] = useState([]);
-  const [populairPosts, setPopulairPosts] = useState([]);
-  const [routing, setRouting] = useState(null);
-  const [map, setMap] = useState(null);
-  const [startAddress, setStartAddress] = useState("");
 
+  const {url} = useContext(AppContext);
+  const [blogs, setBlogs] = useState([]); // Stores posts data
+  const [populairPosts, setPopulairPosts] = useState([]); // Stores popular posts
+  const [routing, setRouting] = useState(null); 
+  const [map, setMap] = useState(null); // Map variabel
+  const [startAddress, setStartAddress] = useState(""); // Start address for routing
 
   const navigate = useNavigate();
 
+  // Function to format ISO dates into readable strings
   const formatDate = (isodate) => {
     const date = new Date(isodate);
     return date.toLocaleDateString("en-US", {
@@ -34,6 +34,7 @@ const Home = () => {
     });
   };
 
+  // Fetches posts data with locations 
   const handleBlogs = async () => {
     try {
       const response = await axios.get(
@@ -45,6 +46,8 @@ const Home = () => {
     }
   };
 
+
+  // Fetches popular posts 
   const handlePopularPosts = async () => {
     try {
       const response = await axios.get(
@@ -56,21 +59,25 @@ const Home = () => {
     }
   };
 
+
   useEffect(() => {
     handleBlogs();
     handlePopularPosts();
   }, []);
 
+
+  // Adds routing control to map instance
   useEffect(() => {
     if (map) {
       const control = L.Routing.control({}).addTo(map);
       setRouting(control);
-
-      }
+    }
   }, [map]);
 
 
 
+
+  // Geocodes address and sets waypoints for routing
   const geocodeAddress = async (address, blog) => {
     const apiKey = 'ad02d4071783442e8bde106c21af1d9c';
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}`;
@@ -93,7 +100,6 @@ const Home = () => {
       alert("Er ging iets mis met het vinden van het adres.");
     }
   };
-  
 
 
 
@@ -245,13 +251,13 @@ const Home = () => {
                       <p style={{ fontSize: "14px", lineHeight: "1.5" }}>{blog.content}</p>
                     )}
                   {blog.image_url && (
-  <img
-    src={blog.image_url}
-    alt={blog.title || "No Image"}
-    className="card-img-bottom"
-    style={{ height: "200px", objectFit: "cover", width: "100%" }}
-  />
-)}
+                  <img
+                    src={blog.image_url}
+                    alt={blog.title || "No Image"}
+                    className="card-img-bottom"
+                    style={{ height: "200px", objectFit: "cover", width: "100%" }}
+                  />
+                )}
          <div className="input-group mb-4">
           <input
             type="text"
@@ -288,7 +294,6 @@ const Home = () => {
         <button
           onClick={() => {
             navigate("/followedPosts/");
-            scrollTo(0, 0);
           }}
           className="btn btn-primary mt-3"
         >
