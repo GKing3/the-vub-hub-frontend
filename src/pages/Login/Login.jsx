@@ -7,7 +7,7 @@ axios.defaults.withCredentials = true;
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
 
-
+// Stores the user the details (email and password)
 const initialState = {
   email: "",
   password: "",
@@ -19,10 +19,12 @@ const Login = () => {
   const { url, token, setToken} = useContext(AppContext);
   const [state, setState] = useState(initialState);
 
+  // Handles changes made in the input fields
   const handleChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
+  // Handles client side authentication and sending user information to backend for confirmation
   const handleSubmit = async (e) => {
     e.preventDefault();
 

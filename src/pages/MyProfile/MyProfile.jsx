@@ -10,21 +10,22 @@ const MyProfile = () => {
   const {userData, setUserData, url, token} = useContext(AppContext);
   const navigate = useNavigate();
 
-  const [followersCount, setFollowersCount] = useState(0);
-  const [followingCount, setFollowingCount] = useState(0);
-  const [blogsCount, setBlogsCount] = useState(0);
+  const [followersCount, setFollowersCount] = useState(0); // State for storing followers count
+  const [followingCount, setFollowingCount] = useState(0); // State for storing following count
+  const [blogsCount, setBlogsCount] = useState(0); // State for storing blogs count
 
-  const [edit, setEdit] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
+  const [edit, setEdit] = useState(false); // Manages edit mode
+  const [imageUrl, setImageUrl] = useState(''); // State for new image URL
  
-  const [newname, setNewname] = useState('');
+  const [newname, setNewname] = useState(''); // State for new name
 
+  // Handles changes made to the profile picture
   const handleImageChange = (e) => {
     const imageInput = e.target.value;
     setImageUrl(imageInput);
   }
 
-
+  // Checks if the the new image URL is valid and saves it
   const saveImageChange = async () => {
     const isValidUrl = (str) => {
       try {
@@ -36,12 +37,13 @@ const MyProfile = () => {
     };
   
     if (!isValidUrl(imageUrl)) {
-      setImageUrl('');
+      setImageUrl(''); // Invalid URL does not change the state
       alert('Invalid image URL'); 
       return false;
     }
 
     try {
+      // Updates the server side with the new image URL
       const response = await axios.put(url + `user/update-profile-img`, { image_profile_url: imageUrl }, {
         headers: {
           'Content-Type': 'application/json',
@@ -58,6 +60,7 @@ const MyProfile = () => {
     }
   };
 
+  // Handles changes made in the name input field when editing the profile
   const handleNameChange = async () => {
     if (newname.length <= 3) {
       setNewname('');
@@ -66,6 +69,7 @@ const MyProfile = () => {
     }
   
     try {
+      // Updates the server side with the new name
       const response = await axios.put(url + 'user/update-name', {
         name: newname,
       });
@@ -88,16 +92,17 @@ const MyProfile = () => {
   };
   
   
-
   const fetchFollowCount = async () => {
     const source = axios.CancelToken.source();
     try {
+      // Fetches user data for followers and following with the help of the unique identifier 'id'
       const response = await axios.get(url + `user/${userData.id}`, { cancelToken: source.token });
       if (response.data) {
         setFollowersCount(response.data.followers.length || 0);
         setFollowingCount(response.data.following.length || 0);
       }
 
+      // Fetches user blog counts
       const res = await axios.get(url + `posts/user/${userData.id}`, { cancelToken: source.token });
       if (res.data) {
         setBlogsCount(res.data.length || 0);

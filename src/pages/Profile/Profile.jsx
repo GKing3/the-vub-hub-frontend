@@ -12,15 +12,16 @@ const Profile = () => {
 //   console.log(userData);
   const navigate = useNavigate();
 
-  const {id} = useParams();
+  const {id} = useParams(); // For fetching the id params from the route
 
-  const [userProfile, setUserProfile] = useState(null);
+  const [userProfile, setUserProfile] = useState(null); // Stores all the details of a user (username, email, profile image, followers, following, number of blogs made)
 
-  const [followersCount, setFollowersCount] = useState(0);
-  const [followingCount, setFollowingCount] = useState(0);
-  const [blogsCount, setBlogsCount] = useState(0);
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0); // Stores user followers count
+  const [followingCount, setFollowingCount] = useState(0); // Stores user following count
+  const [blogsCount, setBlogsCount] = useState(0); // Stores user blog count
+  const [isFollowing, setIsFollowing] = useState(false); // Check if a user is followed or not
 
+  // Fetches followers and following count
   const fetchFollowCount = async () => {
     const userId = id || userData.id;
 
@@ -28,7 +29,8 @@ const Profile = () => {
     // console.log(response.data);
 
     if(response.data) {
-        setUserProfile(response.data);
+      // console.log('test123',response.data.followers);
+      setUserProfile(response.data);
       setFollowersCount(response.data.followers.length || 0);
       setFollowingCount(response.data.following.length || 0);
       setIsFollowing(response.data.followers.includes(userData.id));
@@ -44,18 +46,19 @@ const Profile = () => {
     try {
         if(isFollowing) {
             await axios.delete(url + `user/unfollow/${userProfile.name}`);
-            setIsFollowing(false);
-            setFollowersCount(followersCount - 1);
+            setIsFollowing(false); // Updates state to show the user is not followed
+            setFollowersCount(followersCount - 1); // Decreases the followers count by 1
         } else {
             await axios.post(url + `user/follow/${userProfile.name}`);
-            setIsFollowing(true);
-            setFollowersCount(followersCount + 1);
+            setIsFollowing(true); // Updates state to show the user is now being followed
+            setFollowersCount(followersCount + 1); // Increases the followers count by 1
         }
     } catch (error) {
         console.log(error);
     }
   }
 
+  // Logged in user is navigated to their profile if they click on a profile associated with a post they made
   const handleLoggedInUser = () => {
     if(userProfile && userProfile.id === userData.id) {
             navigate('/my-profile');

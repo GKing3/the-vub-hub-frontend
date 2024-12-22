@@ -14,6 +14,16 @@ import "leaflet-routing-machine";
 import { AppContext } from "../../context/AppContext";
 
 const Home = () => {
+<<<<<<< HEAD
+  const {url} = useContext(AppContext);
+  // Initializing the state variables
+  const [blogs, setBlogs] = useState([]);
+  const [popularPosts, setPopularPosts] = useState([]);
+  const [routing, setRouting] = useState(null);
+  const [map, setMap] = useState(null);
+  const [startAddress, setStartAddress] = useState("");
+=======
+>>>>>>> main
 
   const {url} = useContext(AppContext);
   const [blogs, setBlogs] = useState([]); // Stores posts data
@@ -24,7 +34,11 @@ const Home = () => {
 
   const navigate = useNavigate();
 
+<<<<<<< HEAD
+  // Helps format the date attached to every post from ISO date string to date
+=======
   // Function to format ISO dates into readable strings
+>>>>>>> main
   const formatDate = (isodate) => {
     const date = new Date(isodate);
     return date.toLocaleDateString("en-US", {
@@ -34,26 +48,34 @@ const Home = () => {
     });
   };
 
+<<<<<<< HEAD
+  // Fetches all the blogs
+=======
   // Fetches posts data with locations 
+>>>>>>> main
   const handleBlogs = async () => {
     try {
       const response = await axios.get(
         "http://localhost:8000/posts/post-with-locations"
       );
-      setBlogs(response.data);
+      setBlogs(response.data); // State that stores fetched blogs
     } catch (error) {
       console.error("Error fetching posts with locations:", error);
     }
   };
 
+<<<<<<< HEAD
+  // Fetches all the popular posts
+=======
 
   // Fetches popular posts 
+>>>>>>> main
   const handlePopularPosts = async () => {
     try {
       const response = await axios.get(
         "http://localhost:8000/posts/popular-posts"
       );
-      setPopulairPosts(response.data);
+      setPopularPosts(response.data); // State that stores fetched popular posts
     } catch (error) {
       console.error("Error fetching popular posts:", error);
     }
@@ -69,6 +91,16 @@ const Home = () => {
   // Adds routing control to map instance
   useEffect(() => {
     if (map) {
+<<<<<<< HEAD
+      const control = L.Routing.control({}).addTo(map); // Initializes the routing control on the map
+      setRouting(control); // State for storing the routing control
+
+      }
+  }, [map]);
+
+
+  // Function to convert an address to coordinates (latitudes and longitudes)
+=======
       const control = L.Routing.control({}).addTo(map);
       setRouting(control);
     }
@@ -78,6 +110,7 @@ const Home = () => {
 
 
   // Geocodes address and sets waypoints for routing
+>>>>>>> main
   const geocodeAddress = async (address, blog) => {
     const apiKey = 'ad02d4071783442e8bde106c21af1d9c';
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}`;
@@ -109,7 +142,7 @@ const Home = () => {
       <div className="popular-container mb-4">
         <h2 className="text-center mb-4">Popular Posts</h2>
         <div className="d-flex overflow-auto scroll">
-          {populairPosts.slice(0,10).map((blog) => (
+          {popularPosts.slice(0,10).map((blog) => (
             <div
               className="card me-4 shadow-sm hover-card border"
               key={blog.id}
