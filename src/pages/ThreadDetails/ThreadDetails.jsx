@@ -4,26 +4,27 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "./threadDetails.css";
 import { AppContext } from "../../context/AppContext";
+import "react-toastify/ReactToastify.css";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 axios.defaults.withCredentials = true;
 
 const API_URL = "http://localhost:8000"; // Backend URL
 
+// Thread detail page component
 const ThreadDetailPage = () => {
-  const { threadId } = useParams(); // Extract thread ID from URL
-  const { userData } = useContext(AppContext);
-  const navigate = useNavigate();
+  const { threadId } = useParams(); // Extract thread ID from URL which used to fetch thread from backend
+  const { userData } = useContext(AppContext); // Logged-in user data
+  const navigate = useNavigate(); // Used for navigating between pages
+  // Thread state variables
+  const [thread, setThread] = useState(null);
+  const [posts, setPosts] = useState([]); // Stores the list of existing posts
+  // Form state variables
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // post state
+  // Post state for when creating a new post
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
   const [newImage, setNewImage] = useState("");
   const [newTag, setNewTag] = useState("");
-  const [thread, setThread] = useState(null);
-
-  // Thread state
-  const [posts, setPosts] = useState([]);
 
   // Opens the form for creating a new thread
   const openForm = () => setIsFormOpen(true);
@@ -31,10 +32,9 @@ const ThreadDetailPage = () => {
   // Closes the form after creating a new thread
   const closeForm = () => {
     setIsFormOpen(false);
-    //setNewThreadTitle(""); // resetting form
   };
 
-  // Retrieving the posts for a thread
+  // Fetch thread and its posts
   useEffect(() => {
     const fetchThreadDetails = async () => {
       try {
@@ -44,37 +44,71 @@ const ThreadDetailPage = () => {
         const postsResponse = await axios.get(
           API_URL + `/posts/thread/${threadId}`
         );
-        setThread(threadResponse.data);
-        console.log(threadResponse.data);
-        setPosts(postsResponse.data);
-        console.log(postsResponse.data);
+        setThread(threadResponse.data); // Update thread state
+        setPosts(postsResponse.data); // Update posts state
       } catch (error) {
+        // Error handling is more minimal because fetching data is passive and user feedback isn't really necessary
         console.error("Error fetching thread details:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
     fetchThreadDetails();
-  }, [threadId]);
+  }, [threadId]); // Runs only when thread id changes
 
   // Posting a post
   const handleCreatePost = async (e) => {
     e.preventDefault();
 
     try {
-      
+      // User has to be logged in to create a post
       if (!userData) {
-        alert("You must be logged in to create a thread.");
+        toast.error("You must be logged in to create a thread.");
         return;
       }
 
+      // validate title
+      if (!newPostTitle || newPostTitle.trim() === "") {
+        toast.error("Title is required and can't be empty.");
+      } else if (newPostTitle.length < 5 || newPostTitle.length > 50) {
+        toast.error("Title must be between 5 and 50 characters.");
+      }
+
+      // validate content
+      if (!newPostContent || newPostContent.trim() === "") {
+        toast.error("Content is required and can't be empty.");
+      } else if (newPostContent.length < 5 || newPostContent.length > 500) {
+        toast.error("Content must be between 5 and 500 characters.");
+      }
+
+      // validate tags
+      if (newTag && typeof newTag !== "string") {
+        errors.push("Tags must be a valid adress string.");
+      }
+
+      // validate image URL
+      const isValidURL = (url) => {
+        try {
+          new URL(url); // Will throw an error if the URL is invalid
+          return true;
+        } catch {
+          return false;
+        }
+      };
+      if (newImage && !isValidURL(newImage)) {
+        toast.error("Image must be a valid URL.");
+      }
+
+      // validate threadId
+      if (!threadId || isNaN(threadId)) {
+        toast.error("ThreadId is required and must be an integer.");
+      }
+
+      // Send the newly created post to the backend with the necessary information
       const response = await axios.post(API_URL + "/posts/", {
         title: newPostTitle,
         content: newPostContent,
         image: newImage,
         tags: newTag,
-        //reading_time: null, // Is this necessary????
         threadId: threadId,
       });
 
@@ -83,25 +117,34 @@ const ThreadDetailPage = () => {
         // Destructuring the response into variables
         const { postId, title, content, image, tags, authorId, threadId } =
           response.data;
-      
+        // Updating the post list with the newly created post
         setPosts([
           ...posts,
-          { id: postId, title, content, image, tags, authorId, threadId,author_name:userData.name, author_image: userData.image_profile_url},
+          {
+            id: postId,
+            title,
+            content,
+            image,
+            tags,
+            authorId,
+            threadId,
+            author_name: userData.name,
+            author_image: userData.image_profile_url,
+          },
         ]);
-        closeForm(); // close form after creating thread
+        closeForm(); // Close form after creating thread
       }
     } catch (error) {
+      // Error where request reached but server responded with a fail
       if (error.response && error.response.data) {
-        alert(error.response.data.error || "Er ging iets mis");
+        toast.error(error.response.data.error || "Something went wrong.");
       } else {
-        console.error("Fout bij het maken van de thread:", error);
-        alert("Er ging iets mis bij het verbinden met de server.");
+        // Error where request didn't reach server
+        console.error("Error when creating thread:", error);
+        toast.error("Something went wrong with connecting to the server.");
       }
     }
   };
-
-
-  if (isLoading) return <p>Loading...</p>;
 
   return (
     <div className="thread-detail-page">
@@ -124,7 +167,12 @@ const ThreadDetailPage = () => {
                     src={post.author_image}
                     alt={`${post.author_name}'s profile`}
                   />
-                  <span onClick={() => navigate(`/profile/${post.user_id}`)} className="text-secondary fw-bold">{post.author_name}</span>
+                  <span
+                    onClick={() => navigate(`/profile/${post.user_id}`)}
+                    className="text-secondary fw-bold"
+                  >
+                    {post.author_name}
+                  </span>
                   <h2 className="post-title">{post.title}</h2>
                   <p className="post-content">
                     {post.content.length > 100
@@ -143,10 +191,10 @@ const ThreadDetailPage = () => {
           </div>
         </>
       )}
-      {/* Form for creating a new thread */}
+      {/* Form for creating a new post */}
       {isFormOpen && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="form-post">
+          <div className="form-post-content">
             <h2>New Post</h2>
             <form onSubmit={handleCreatePost}>
               <input
@@ -154,12 +202,13 @@ const ThreadDetailPage = () => {
                 placeholder="Post title"
                 value={newPostTitle}
                 onChange={(e) => setNewPostTitle(e.target.value)}
+                required
               />
               <textarea
                 placeholder="Post content"
                 value={newPostContent}
                 onChange={(e) => setNewPostContent(e.target.value)}
-                required // Backend requires content
+                required
               />
               <input
                 type="text"
@@ -173,7 +222,7 @@ const ThreadDetailPage = () => {
                 value={newImage}
                 onChange={(e) => setNewImage(e.target.value)}
               />
-              <div className="modal-actions">
+              <div className="form-post-actions">
                 <button type="submit">Create</button>
                 <button type="button" onClick={closeForm}>
                   Cancel
@@ -183,6 +232,19 @@ const ThreadDetailPage = () => {
           </div>
         </div>
       )}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </div>
   );
 };

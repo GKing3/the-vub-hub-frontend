@@ -1,3 +1,4 @@
+/* Post styling */
 .posts-container {
     max-width: 800px;
     margin: 20px auto;
@@ -8,60 +9,61 @@
     font-family: Arial, sans-serif;
   }
   
-  .header {
+.header {
     text-align: center;
     margin-bottom: 20px;
   }
   
-  .no-posts {
-    text-align: center;
-    font-size: 16px;
-    color: #555;
-  }
-  
-  .posts-list {
+.posts-list {
     list-style-type: none;
     padding: 0;
   }
   
-  .post-item {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    padding: 15px;
-    background-color: #fff;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.post-content {
+    margin: 0 0 10px 0; /* Adds space below the post content */
+    text-align: center; /* Centers the text within the content area */
+    font-size: 1rem; /* Sets the font size for the content text */
+    color: #333; /* text color */
   }
-  
-  .post-item:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .post-title {
-    margin: 0;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .post-content {
-    margin: 10px 0;
-    font-size: 14px;
-    color: #666;
-  }
-  
-  .post-date {
-    font-size: 12px;
-    color: #999;
-    display: block;
-    margin-top: 10px;
+.post-title {
+    margin: 0; /* Removes margin around the post title */
+    font-size: 20px; /* Sets the font size for the title */
+    font-weight: bold; /* Makes the title bold */
+    color: #333; /* title text color */
   }
 
-  .author-profile-pic {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-right: 10px;
-    object-fit: cover;
+.post-item {
+    border: 1px solid #ccc; /* Adds a light gray border around each post */
+    border-radius: 8px; /* Rounds the corners of the post container */
+    margin-bottom: 15px; /* Adds space below each post */
+    padding: 15px; /* Adds space inside the post container */
+    background-color: #fff; /* Sets a white background for the post */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Enables smooth scaling and shadow transition effects on hover */
+  }
+  
+.post-item:hover {
+    transform: scale(1.02); /* Slightly enlarges posts on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a shadow effect to make the post appear lifted */
+  }
+
+.post-date {
+    font-size: 12px; /* Sets a smaller font size for the date */
+    color: #999; /* Applies a light gray color to the date */
+    display: block; /* Ensures the date appears on its own line */
+    margin-top: 10px; /* Adds space above the date */
+  }
+  
+.author-profile-pic {
+    width: 30px; /* Sets a fixed width for the profile picture */
+    height: 30px; /* Sets a fixed height for the profile picture */
+    border-radius: 50%; /* Makes the profile picture circular */
+    margin-right: 10px; /* Adds space to the right of the picture */
+    object-fit: cover; /* Ensures the image scales properly without distortion */
+  }
+
+/* when there are no posts */
+.no-posts {
+    text-align: center;
+    font-size: 16px;
+    color: #555;
   }
