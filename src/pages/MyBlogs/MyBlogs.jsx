@@ -8,35 +8,27 @@ const API_URL = "http://localhost:8000"; // Backend URL
 
 const MyBlogs = () => {
   const [posts, setPosts] = useState([]); // State to store fetched posts
-  const [loading, setLoading] = useState(true); // State to manage loading status
-  const [error, setError] = useState(null); // State to manage errors
   const { userData } = useContext(AppContext);
 
+  // fetching created posts of the logged-in user
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        setLoading(true); // Start loading
         const response = await axios.get(
           API_URL + `/posts/user/${userData.id}`
         );
         setPosts(response.data);
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false); // Stop loading
+        console.error("Error fetching created posts:", err);
       }
     };
     fetchPosts();
-  }, []);
+  }, []); // Is only run once, when mounting the page
 
   return (
     <div className="posts-container">
       <h1 className="header">My Posts</h1>
-      {loading ? (
-        <p className="loading">Loading your posts...</p>
-      ) : error ? (
-        <p className="error">Error fetching posts: {error}</p>
-      ) : posts.length === 0 ? (
+      {posts.length === 0 ? (
         <p className="no-posts">You have not created any posts yet.</p>
       ) : (
         <ul className="posts-list">
@@ -57,8 +49,7 @@ const MyBlogs = () => {
                 Read More
               </Link>
               <span className="post-date">
-                {/* Simulating a post date */}
-                {new Date().toLocaleDateString()}
+                Posted on: {new Date(post.created_at).toLocaleDateString()}
               </span>
             </li>
           ))}

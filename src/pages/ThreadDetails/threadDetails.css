@@ -1,81 +1,68 @@
 /* General page styling */
 .thread-detail-page {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 20px auto;
-    max-width: 800px;
-    padding: 20px;
-    background-color: #f9f9f9; /* Light background for the page */
-    border-radius: 8px;
+    font-family: Arial, sans-serif; /* Sets the font style for the page */
+    line-height: 1.6; /* Adjusts line spacing for readability */
+    margin: 20px auto; /* Centers the page content with top/bottom margin */
+    max-width: 800px; /* Limits the maximum width of the page content */
+    padding: 20px; /* Adds space inside the page container */
+    background-color: #f9f9f9; /* Sets a light background color for contrast */
+    border-radius: 8px; /* Rounds the corners of the page container */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a card-like effect */
   }
-  
-  /* Header styling */
   .thread-detail-page header {
-    text-align: center;
-    margin-bottom: 30px;
+    text-align: center; /* Centers the header content */
+    margin-bottom: 30px; /* Adds space below the header */
   }
-  
   .thread-detail-page header h1 {
-    font-size: 2rem;
-    color: #004080; /* Dark blue for the thread title */
+    font-size: 2rem; /* Sets the font size of the main header */
+    color: #34495e; /* Color for the header text */
   }
   
-  /* Main content styling */
-  .thread-detail-page main {
-    margin-top: 20px;
+  /* Post styling */
+  .post-content {
+    margin: 0 0 10px 0; /* Adds space below the post content */
+    text-align: center; /* Centers the text within the content area */
+    font-size: 1rem; /* Sets the font size for the content text */
+    color: #333; /* text color */
   }
-  
-  .thread-detail-page main h2 {
-    font-size: 1.5rem;
-    color: #333; /* Slightly dark gray */
-    margin-bottom: 20px;
-  }
-  
-  /* Post list styling */
-  .thread-detail-page ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .thread-detail-page li {
-    background: #ffffff; /* White background for each post */
-    margin-bottom: 15px;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for each post */
-  }
-  
-  .thread-detail-page li p {
-    margin: 0 0 10px 0; /* Space below post content */
-    font-size: 1rem;
-    color: #333;
-  }
-  
-  .thread-detail-page li small {
-    font-size: 0.875rem;
-    color: #666; /* Lighter gray for the author info */
-    display: block;
-    text-align: right;
-  }
-  
-  /* No posts message styling */
-  .thread-detail-page p {
-    text-align: center;
-    font-size: 1rem;
-    color: #555;
-    margin-top: 20px;
-  }
-
   .post-title {
-    margin: 0;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
+    margin: 0; /* Removes margin around the post title */
+    font-size: 20px; /* Sets the font size for the title */
+    font-weight: bold; /* Makes the title bold */
+    color: #333; /* title text color */
   }
 
+  .post-item {
+    border: 1px solid #ccc; /* Adds a light gray border around each post */
+    border-radius: 8px; /* Rounds the corners of the post container */
+    margin-bottom: 15px; /* Adds space below each post */
+    padding: 15px; /* Adds space inside the post container */
+    background-color: #fff; /* Sets a white background for the post */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Enables smooth scaling and shadow transition effects on hover */
+  }
+  
+  .post-item:hover {
+    transform: scale(1.02); /* Slightly enlarges posts on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a shadow effect to make the post appear lifted */
+  }
+
+  .post-date {
+    font-size: 12px; /* Sets a smaller font size for the date */
+    color: #999; /* Applies a light gray color to the date */
+    display: block; /* Ensures the date appears on its own line */
+    margin-top: 10px; /* Adds space above the date */
+  }
+  
+  .author-profile-pic {
+    width: 30px; /* Sets a fixed width for the profile picture */
+    height: 30px; /* Sets a fixed height for the profile picture */
+    border-radius: 50%; /* Makes the profile picture circular */
+    margin-right: 10px; /* Adds space to the right of the picture */
+    object-fit: cover; /* Ensures the image scales properly without distortion */
+  }
+
+/* button style */
   .create-post-button {
-    background-color: #ffd700;
     color: #004080;
     border: none;
     padding: 10px 15px;
@@ -84,76 +71,59 @@
     cursor: pointer;
     float: right;
   }
-
   .create-post-button:hover {
-    background-color: #e5c100;
+    color: white;
   }
 
-  /* Style for the modal content */
-/* Modal backdrop (blurry background) */
-.modal {
-    position: fixed; /* Makes the modal fixed relative to the viewport */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    backdrop-filter: blur(8px); /* Adds the blur effect */
-    display: flex;
-    justify-content: center; /* Centers horizontally */
-    align-items: center; /* Centers vertically */
-    z-index: 1000; /* Ensures the modal appears above other elements */
+/* Style for the form */
+.form-post {
+  position: fixed; /* fixes the form relative to the viewport, ensuring it stays in the same position even when scrolling */
+  top: 0; /* aligns the form to the top of the viewport */
+  left: 0; /* aligns the form to the left of the viewport */
+  width: 100%; /* makes the form cover the entire screen width */
+  height: 100%; /* makes the form cover the entire screen height */
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent dark background */
+  backdrop-filter: blur(8px); /* adds the blur effect */
+  display: flex; /* enables flexbox layout for centering */
+  justify-content: center; /* centers horizontally */
+  align-items: center; /* centers vertically */
+  z-index: 1000; /* ensures the form appears above other elements */
   }
   
-  /* Modal content (the actual form container) */
-  .modal-content {
-    background: white; /* White background for the modal */
-    padding: 20px;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 400px; /* Limits the width */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); /* Adds a subtle shadow */
-    z-index: 1001; /* Ensures it stays above the background */
-    text-align: center;
+  /* form content (the actual form container) */
+.form-post-content {
+    background: white; /* White background for the form */
+    padding: 20px; /* adds space inside the container */
+    border-radius: 8px; /* rounds the corners of the container */
+    width: 100%; /* makes the container take the full width of its parent */
+    max-width: 400px; /* limits the width */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); /* Aads a subtle shadow */
+    z-index: 1001; /* ensures it stays above the blurry background */
+    text-align: center; /* centers text inside the container */
   }
   
-  /* Modal actions (buttons container) */
-  .modal-actions {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    gap: 10px; /* Adds spacing between buttons */
+/* form actions (buttons container) */
+.form-post-actions {
+    margin-top: 20px; /* adds space above the buttons */
+    display: flex; /* enables flexbox for button layout */
+    gap: 10px; /* adds spacing between buttons */
   }
   
-  /* Buttons inside the modal */
-  .modal-actions button {
-    flex: 1; /* Makes buttons the same width */
-    padding: 10px;
+/* Buttons inside the form */
+.form-post-actions button {
+    flex: 1; /* makes buttons take equal space */
+    padding: 10px; /* adds space inside the button */
     font-size: 16px;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  /* Primary button (submit) */
-  .modal-actions button[type="submit"] {
-    background-color: #004080;
+  } 
+.form-post-actions button[type="submit"] {
     color: white;
-  }
-  
-  .modal-actions button[type="submit"]:hover {
-    background-color: #003366;
-  }
-  
-  /* Secondary button (cancel) */
-  .modal-actions button[type="button"] {
-    background-color: #ddd;
+  } 
+.form-post-actions button[type="button"] {
     color: #333;
   }
   
-  .modal-actions button[type="button"]:hover {
-    background-color: #bbb;
-  }
-  
+
   
   
