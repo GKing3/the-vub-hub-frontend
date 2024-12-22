@@ -30,7 +30,7 @@ const Register = () => {
 
     try {
       const response = await axios.post(url + 'auth/register', state);
-      console.log(response);
+
 
       if(!state.name || !state.email || !state.password || !state.confirmPassword) {
         toast.error('Please fill out all fields');
@@ -42,6 +42,7 @@ const Register = () => {
         });
       }
     } catch (error) {
+      toast.error('error while registration');
       console.log(error)
     }
   }

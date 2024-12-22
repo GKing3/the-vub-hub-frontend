@@ -1,41 +1,22 @@
+/* body styling */
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-  }
-  
-  h1 {
-    color: #34495e;
-    font-size: 2rem;
-    font-weight: bold;
-  }
-  
-  h2 {
-    color: #34495e;
-    font-size: 1.5rem;
-  }
-  
+  font-family: Arial, sans-serif; 
+  background-color: #f4f4f9; 
+}
 
-  .card {
-    border: 2px solid #34495e;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  
-  .card-title {
-    color: #34495e;
-    font-weight: bold;
-  }
-  
 
-  .btn-outline-primary {
-    color: #34495e;
-    border: 1px solid #34495e;
-    background-color: transparent;
-  }
-  
-  .btn-outline-primary:hover {
-    background-color: #34495e;
-    color: white;
-  }
-  
+/* Styling for card components */
+.card {
+  border: 2px solid #34495e; /* Add a border with a dark color */
+  border-radius: 8px; /* Rounded corners  */
+  margin-bottom: 20px; /* Space between cards */
+}
+
+/* Styling for card titles */
+.card-title {
+  color: #34495e; /* Same dark shade as navbar*/
+  font-weight: bold; 
+}
+
+
