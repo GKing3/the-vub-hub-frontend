@@ -16,38 +16,14 @@ const MyProfile = () => {
   const [followingCount, setFollowingCount] = useState(0);
   const [blogsCount, setBlogsCount] = useState(0);
 
-  const [edit, setEdit] = useState(false);
+  const [edit, setEdit] = useState(false); // Manages edit mode
   const [imageUrl, setImageUrl] = useState('');
-  // const [file, setFile] = useState(null);
 
-  // const handleImageChange = async (e) => {
-  //   const newFile = URL.createObjectURL(e.target.files[0])
-  //   setFile(newFile);
-  //   updateAvatar(newFile);
-
-  //   const formData = new FormData();
-  //   formData.append('image', newFile);
-
-  //   try {
-  //     const response = await axios.put(url + `user/update-profile-img`, formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data',
-  //         'Authorization': `Bearer ${token}`
-  //       }
-  //     });
-  //     // console.log(response.data);
-  //     if(response.data.code == 200) {
-  //       const updatedImageUrl = response.data.image_profile_url;
-  //       setUserData((prev) => ({...prev, image_profile_url: updatedImageUrl}))
-  //     }
-  //   } catch (error) {
-  //     toast.error('Error while uploading image', error);
-  //   }
-  // }
-
+  // Handles changes made on the user profile image
   const handleImageChange = async (e) => {
     const imageInput = e.target.value;
 
+    // Checks if the string  added in the image input field is a valid URL
     const validUrl = (str) => {
       try {
         new URL(str);
@@ -58,8 +34,8 @@ const MyProfile = () => {
     }
 
     if(validUrl(imageInput)) {
-      setImageUrl(imageInput);
-      updateAvatar(imageInput);
+      setImageUrl(imageInput); // Updates the state with the new image URL
+      updateAvatar(imageInput); // Updates the avatar in the global context
 
       // const formData = new FormData();
       // formData.append('image', imageInput);
@@ -81,8 +57,9 @@ const MyProfile = () => {
     }
   }
 
+  // Handles changes made in the name input field both locally and server side
   const handleNameChange = async () => {
-    console.log('new name', userData.name);
+    // console.log('new name', userData.name);
     const response = await axios.put(url + 'user/update-name', {
       name: userData.name
     });
@@ -95,6 +72,7 @@ const MyProfile = () => {
     }
   }
 
+  // Fetches followers and following count from the server and helps render the counts on the 'My Profile' page of a specific logged in user
   const fetchFollowCount = async () => {
     const response = await axios.get(url + `user/${userData.id}`);
     console.log(response.data);
@@ -104,6 +82,7 @@ const MyProfile = () => {
       setFollowingCount(response.data.following.length || 0);
     }
 
+    // Fetch blogs made by a logged in user
     const res = await axios.get(url + `posts/user/${userData.id}`);
     if(res.data) {
       setBlogsCount(res.data.length || 0);
@@ -159,28 +138,6 @@ const MyProfile = () => {
           </div>
         </div>
         <p> Email: {userData.email} </p>
-        {/* {
-          edit
-          ? 
-            <>
-              <p> Gender: </p>
-              <select onChange={e => setUserData(prev => ({...prev, gender: e.target.value}))}>
-                <option value="Male"> Male </option>
-                <option value="Female"> Female </option>
-                <option value="Prefer not to say"> Prefer not to say </option>
-              </select>
-            </>
-          : <p> Gender: {userData.gender} </p> 
-        }
-        {
-          edit 
-          ? (
-            <>
-              <p> Date of birth: </p>
-              <input type="date" value={userData.dob} onChange={e => setUserData(prev => ({...prev, dob: e.target.value}))}/>
-            </>
-          ) : ( <p> Date of birth: {userData.dob} </p> )
-        } */}
         {
           edit 
           ? (

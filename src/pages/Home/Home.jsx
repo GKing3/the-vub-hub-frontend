@@ -16,8 +16,9 @@ import { AppContext } from "../../context/AppContext";
 
 const Home = () => {
   const {url} = useContext(AppContext);
+  // Initializing the state variables
   const [blogs, setBlogs] = useState([]);
-  const [populairPosts, setPopulairPosts] = useState([]);
+  const [popularPosts, setPopularPosts] = useState([]);
   const [routing, setRouting] = useState(null);
   const [map, setMap] = useState(null);
   const [startAddress, setStartAddress] = useState("");
@@ -25,6 +26,7 @@ const Home = () => {
 
   const navigate = useNavigate();
 
+  // Helps format the date attached to every post from ISO date string to date
   const formatDate = (isodate) => {
     const date = new Date(isodate);
     return date.toLocaleDateString("en-US", {
@@ -34,23 +36,25 @@ const Home = () => {
     });
   };
 
+  // Fetches all the blogs
   const handleBlogs = async () => {
     try {
       const response = await axios.get(
         "http://localhost:8000/posts/post-with-locations"
       );
-      setBlogs(response.data);
+      setBlogs(response.data); // State that stores fetched blogs
     } catch (error) {
       console.error("Error fetching posts with locations:", error);
     }
   };
 
+  // Fetches all the popular posts
   const handlePopularPosts = async () => {
     try {
       const response = await axios.get(
         "http://localhost:8000/posts/popular-posts"
       );
-      setPopulairPosts(response.data);
+      setPopularPosts(response.data); // State that stores fetched popular posts
     } catch (error) {
       console.error("Error fetching popular posts:", error);
     }
@@ -63,14 +67,14 @@ const Home = () => {
 
   useEffect(() => {
     if (map) {
-      const control = L.Routing.control({}).addTo(map);
-      setRouting(control);
+      const control = L.Routing.control({}).addTo(map); // Initializes the routing control on the map
+      setRouting(control); // State for storing the routing control
 
       }
   }, [map]);
 
 
-
+  // Function to convert an address to coordinates (latitudes and longitudes)
   const geocodeAddress = async (address, blog) => {
     const apiKey = 'ad02d4071783442e8bde106c21af1d9c';
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(address)}&key=${apiKey}`;
@@ -103,7 +107,7 @@ const Home = () => {
       <div className="popular-container mb-4">
         <h2 className="text-center mb-4">Popular Posts</h2>
         <div className="d-flex overflow-auto scroll">
-          {populairPosts.slice(0,10).map((blog) => (
+          {popularPosts.slice(0,10).map((blog) => (
             <div
               className="card me-4 shadow-sm hover-card border"
               key={blog.id}

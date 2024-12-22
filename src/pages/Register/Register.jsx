@@ -6,6 +6,7 @@ import { url } from "../../Api";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+// Stores the user the details (name, email, password)
 const initialState = {
   name: '',
   email: '',
@@ -18,10 +19,12 @@ const Register = () => {
 
   const [state, setState] = useState(initialState);
 
+  // User input is captured and populated in the email and password input fields
   const handleChange = (e) => {
     setState({...state, [e.target.name]: e.target.value});
   }
 
+  // Handles client side authentication and sending user information to backend for confirmation
   const handleSubmit = async(e) => {
     e.preventDefault();
 
